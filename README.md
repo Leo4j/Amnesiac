@@ -1,9 +1,4 @@
-![image](https://github.com/Leo4j/Amnesiac/assets/61951374/ce5e79c8-8253-4e5a-b193-9a31e0ffaebc)
-
-![image](https://github.com/Leo4j/Amnesiac/assets/61951374/26184c70-d7cb-454e-9bdf-4dd95de9b9e8)
-
-![image](https://github.com/Leo4j/Amnesiac/assets/61951374/678ce24e-70c4-47b1-b595-ca0835ba35d9)
-
+![image](https://github.com/Leo4j/Amnesiac/assets/61951374/cc3d29ea-3d6e-48cb-917c-029475794d39)
 
 # Amnesiac
 
@@ -62,3 +57,9 @@ Amnesiac is distributed under the BSD 3-Clause "New" or "Revised" License. Pleas
 **THE SOFTWARE IS PROVIDED “AS IS,” WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
 
 ![image](https://github.com/Leo4j/Amnesiac/assets/61951374/3bea0d42-2c97-43f0-9a92-c8255afaab60)
+
+![image](https://github.com/Leo4j/Amnesiac/assets/61951374/26184c70-d7cb-454e-9bdf-4dd95de9b9e8)
+
+![image](https://github.com/Leo4j/Amnesiac/assets/61951374/678ce24e-70c4-47b1-b595-ca0835ba35d9)
+
+![image](https://github.com/Leo4j/Amnesiac/assets/61951374/ce5e79c8-8253-4e5a-b193-9a31e0ffaebc)
