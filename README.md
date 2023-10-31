@@ -1,8 +1,5 @@
 ![279440077-678ce24e-70c4-47b1-b595-ca0835ba35d9](https://github.com/Leo4j/Amnesiac/assets/61951374/061a14d4-ac68-4e54-ab14-f72a047d1aa9)
 
-![279440487-cc3d29ea-3d6e-48cb-917c-029475794d39](https://github.com/Leo4j/Amnesiac/assets/61951374/e952ee73-c99f-4300-8406-f6b1ce4bdaf8)
-
-
 # Amnesiac
 
 **Amnesiac** is a post-exploitation and adversary emulation framework designed to assist Red Teams and Penetration Testers with lateral movement within active directory environments.
@@ -11,7 +8,7 @@ Amnesiac was specifically developed to bridge a gap on Windows OS, where post-ex
 
 If you find Amnesiac valuable and use it in your work, please consider giving us a star on GitHub. Your support motivates the developer to continue improving and maintaining this project.
 
-<a href='https://ko-fi.com/leo4j' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+![279440487-cc3d29ea-3d6e-48cb-917c-029475794d39](https://github.com/Leo4j/Amnesiac/assets/61951374/e952ee73-c99f-4300-8406-f6b1ce4bdaf8)
 
 ## Key Features
 
