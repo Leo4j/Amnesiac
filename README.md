@@ -8,7 +8,7 @@ Amnesiac was specifically developed to bridge a gap on Windows OS, where post-ex
 
 If you find Amnesiac valuable and use it in your work, please consider giving us a star on GitHub. Your support motivates the developer to continue improving and maintaining this project.
 
-<a href='https://ko-fi.com/leo4j' onclick="window.open('https://ko-fi.com/leo4j', '_blank'); return false;"><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+<a href='https://ko-fi.com/leo4j' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
 ## Key Features
 
