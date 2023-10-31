@@ -1,4 +1,4 @@
-![279440487-cc3d29ea-3d6e-48cb-917c-029475794d39](https://github.com/Leo4j/Amnesiac/assets/61951374/e952ee73-c99f-4300-8406-f6b1ce4bdaf8)
+![279440077-678ce24e-70c4-47b1-b595-ca0835ba35d9](https://github.com/Leo4j/Amnesiac/assets/61951374/061a14d4-ac68-4e54-ab14-f72a047d1aa9)
 
 # Amnesiac
 
@@ -56,6 +56,6 @@ Amnesiac is distributed under the BSD 3-Clause "New" or "Revised" License. Pleas
 
 **The creator of Amnesiac disclaims liability for any misuse or illicit use of the tool and is not responsible for any resulting damages or losses.**
 
-![279440077-678ce24e-70c4-47b1-b595-ca0835ba35d9](https://github.com/Leo4j/Amnesiac/assets/61951374/061a14d4-ac68-4e54-ab14-f72a047d1aa9)
+![279440487-cc3d29ea-3d6e-48cb-917c-029475794d39](https://github.com/Leo4j/Amnesiac/assets/61951374/e952ee73-c99f-4300-8406-f6b1ce4bdaf8)
 
 **THE SOFTWARE IS PROVIDED “AS IS,” WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
