@@ -93,7 +93,7 @@ $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = $Timeout * 1000
 $timer.Add_Tick({
     $form.Close()
-    Write-Host "Prompt timed out!"
+    Write-Output "Prompt timed out!"
 })
 $timer.Start()
 
@@ -107,5 +107,5 @@ $timer.Dispose()
 
 # Output the entered password if it was provided
 if ($form.Tag) {
-    Write-Host "Password entered: $($form.Tag)"
+    Write-Output "Password entered: $($form.Tag)"
 }
