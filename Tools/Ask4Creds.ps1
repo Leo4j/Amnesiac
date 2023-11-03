@@ -29,7 +29,7 @@ $form.Controls.Add($banner)
 
 # "Enter your credentials." Label
 $credentialsLabel = New-Object System.Windows.Forms.Label
-$credentialsLabel.Location = New-Object System.Drawing.Point(10, 65)
+$credentialsLabel.Location = New-Object System.Drawing.Point(10, 68)
 $credentialsLabel.Size = New-Object System.Drawing.Size(330,20)
 $credentialsLabel.Text = 'Enter your credentials.'
 $form.Controls.Add($credentialsLabel)
