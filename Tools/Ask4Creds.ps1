@@ -92,8 +92,8 @@ $CancelButton.Add_Click({
 $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = $Timeout * 1000
 $timer.Add_Tick({
-    $form.Close()
     Write-Output "Prompt timed out!"
+    $form.Close()
 })
 $timer.Start()
 
