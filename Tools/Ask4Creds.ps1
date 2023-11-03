@@ -107,5 +107,5 @@ $timer.Dispose()
 
 # Output the entered password if it was provided
 if ($form.Tag) {
-    Write-Output "Password entered: $($form.Tag)"
-} else {Write-Output "Prompt timed out or user canceled"}
+    Write-Output "[+] Password entered: $($form.Tag)"
+} else {Write-Output "[-] Prompt timed out or user canceled"}
