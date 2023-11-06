@@ -1,4 +1,4 @@
-function Tkn_Access_Check {
+function Access_Check {
 	param($Method, $Targets, $Command, [switch]$NoOutput)
 	
 	if ($Targets) {
