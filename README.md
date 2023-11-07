@@ -1,7 +1,7 @@
 ![Amnesiac3](https://github.com/Leo4j/Amnesiac/assets/61951374/586930af-e353-44de-8d37-a0d1279fdc57)
 ![279440077-678ce24e-70c4-47b1-b595-ca0835ba35d9](https://github.com/Leo4j/Amnesiac/assets/61951374/061a14d4-ac68-4e54-ab14-f72a047d1aa9)
 
-**Amnesiac** is a post-exploitation and adversary emulation framework designed to assist Red Teams and Penetration Testers with lateral movement within active directory environments.
+`Amnesiac` is a post-exploitation and adversary emulation framework designed to assist Red Teams and Penetration Testers with lateral movement within active directory environments.
 
 Amnesiac was specifically developed to bridge a gap on Windows OS, where post-exploitation frameworks are not readily available unless explicitly installed.
 
