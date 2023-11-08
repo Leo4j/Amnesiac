@@ -45,7 +45,7 @@ Amnesiac's intuitive command-line interface allows you to easily interact with i
 
 For support or to report issues, please visit the Amnesiac GitHub repository and submit a new issue. Contributions and feedback from the community are highly encouraged and appreciated.
 
-![2023-11-08_20-39](https://github.com/Leo4j/Amnesiac/assets/61951374/9a1cdf5f-60b3-466b-98e6-282a807cd32e)
+![image](https://github.com/Leo4j/Amnesiac/assets/61951374/783daa84-71f6-439b-beb3-8ffb186a06e2)
 
 ### License
 
