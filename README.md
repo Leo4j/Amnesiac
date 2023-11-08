@@ -1,5 +1,5 @@
-![Amnesiac3](https://github.com/Leo4j/Amnesiac/assets/61951374/586930af-e353-44de-8d37-a0d1279fdc57)
-![279440077-678ce24e-70c4-47b1-b595-ca0835ba35d9](https://github.com/Leo4j/Amnesiac/assets/61951374/061a14d4-ac68-4e54-ab14-f72a047d1aa9)
+![Amnesiac3](https://github.com/Leo4j/Amnesiac/assets/61951374/f99be249-3270-4c92-ab27-516d2b8db7a3)
+![279440077-678ce24e-70c4-47b1-b595-ca0835ba35d9](https://github.com/Leo4j/Amnesiac/assets/61951374/067080b7-b115-41e4-994e-60c0335c05dc)
 
 # Amnesiac
 
@@ -37,7 +37,7 @@ For support or discussions, please visit the Discussions page and submit a new p
 
 ## Preview
 
-![image](https://github.com/Leo4j/Amnesiac/assets/61951374/783daa84-71f6-439b-beb3-8ffb186a06e2)
+![2023-11-08_20-39](https://github.com/Leo4j/Amnesiac/assets/61951374/d95d76da-c41e-40c2-aebb-8d38666a21f1)
 
 ### License
 
