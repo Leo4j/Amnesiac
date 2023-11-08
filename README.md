@@ -29,7 +29,7 @@ Amnesiac comes equipped with an array of post-exploitation modules, including ke
 
 ### Acknowledgments
 
-Amnesiac relies on the contributions of various projects for its underlying functionality. In the source code of each module, you'll find author and reference link information, ensuring proper attribution to the original creators.
+Amnesiac relies on few other projects for its modules. In each module, you'll find reference link information, ensuring proper attribution to the original creators.
 
 ## Getting Started
 
@@ -45,6 +45,8 @@ Amnesiac's intuitive command-line interface allows you to easily interact with i
 
 For support or to report issues, please visit the Amnesiac GitHub repository and submit a new issue. Contributions and feedback from the community are highly encouraged and appreciated.
 
+![2023-11-08_20-39](https://github.com/Leo4j/Amnesiac/assets/61951374/9a1cdf5f-60b3-466b-98e6-282a807cd32e)
+
 ### License
 
 Amnesiac is distributed under the BSD 3-Clause "New" or "Revised" License. Please review the license for details on usage and redistribution.
@@ -58,3 +60,4 @@ Amnesiac is distributed under the BSD 3-Clause "New" or "Revised" License. Pleas
 **The creator of Amnesiac disclaims liability for any misuse or illicit use of the tool and is not responsible for any resulting damages or losses.**
 
 **THE SOFTWARE IS PROVIDED “AS IS,” WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
+
