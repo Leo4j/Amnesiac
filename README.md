@@ -11,7 +11,7 @@ If you find Amnesiac valuable and use it in your work, please consider giving us
 
 ## Key Features
 
-### Command Execution over Named-Pipes
+### Command Execution over Named-Pipes (SMB)
 
 Amnesiac sends commands and receives outputs through Named Pipes, ensuring discreet and efficient post-exploitation activities.
 
