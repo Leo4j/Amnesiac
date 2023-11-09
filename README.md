@@ -7,7 +7,7 @@
 
 Amnesiac is being developed to bridge a gap on Windows OS, where post-exploitation frameworks are not readily available unless explicitly installed. In fact, it is entirely written in PowerShell, and can be loaded and executed in memory, just like any other PowerShell script.
 
-If you find Amnesiac valuable, please consider giving us a star on GitHub. Your support motivates the developer to continue improving and maintaining this project.
+If you find Amnesiac valuable and you like this project, please consider giving us a star on GitHub. Your support motivates the developer to continue improving and maintaining this project.
 
 [Amnesiac is under development and will be released soon]
 
