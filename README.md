@@ -9,6 +9,8 @@ Amnesiac is being developed to bridge a gap on Windows OS, where post-exploitati
 
 If you find Amnesiac valuable and use it in your work, please consider giving us a star on GitHub. Your support motivates the developer to continue improving and maintaining this project.
 
+[Amnesiac is under development and will be released soon]
+
 ## Key Features
 
 ### Command Execution over Named-Pipes (SMB)
