@@ -5,7 +5,7 @@
 
 `Amnesiac` is a post-exploitation framework designed to assist Penetration Testers and Red Teams with lateral movement within active directory environments.
 
-Amnesiac was specifically developed to bridge a gap on Windows OS, where post-exploitation frameworks are not readily available unless explicitly installed. In fact, it is entirely written in PowerShell, and can be loaded and executed in memory, just like any other PowerShell script.
+Amnesiac is being developed to bridge a gap on Windows OS, where post-exploitation frameworks are not readily available unless explicitly installed. In fact, it is entirely written in PowerShell, and can be loaded and executed in memory, just like any other PowerShell script.
 
 If you find Amnesiac valuable and use it in your work, please consider giving us a star on GitHub. Your support motivates the developer to continue improving and maintaining this project.
 
