@@ -11,6 +11,12 @@ If you find Amnesiac valuable and you like this project, please consider giving 
 
 Please read the documentation to get the best out of Amnesiac: https://leo4j.gitbook.io/amnesiac/
 
+## Load and run
+
+```
+iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/Leo4j/Amnesiac/main/Amnesiac.ps1');Amnesiac
+```
+
 ## Key Features
 
 ### Command Execution over Named-Pipes (SMB)
