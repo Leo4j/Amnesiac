@@ -9,7 +9,7 @@ Amnesiac is being developed to bridge a gap on Windows OS, where post-exploitati
 
 If you find Amnesiac valuable and you like this project, please consider giving us a star on GitHub. Your support motivates the developer to continue improving and maintaining this project.
 
-[Amnesiac is under development and will be released soon]
+Please read the documentation to get the best out of Amnesiac: https://leo4j.gitbook.io/amnesiac/
 
 ## Key Features
 
