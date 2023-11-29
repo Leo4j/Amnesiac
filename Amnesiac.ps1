@@ -2974,7 +2974,7 @@ function InteractWithPipeSession{
 		else{continue}
 
 		# Read response from the client
-		if(!$global:RestoreTimeout){$timeoutSeconds = 300}
+		if(!$global:RestoreTimeout){$timeoutSeconds = 30}
 		else{$global:RestoreTimeout = $False}
 
 		$runspace = [runspacefactory]::CreateRunspace()
