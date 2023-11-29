@@ -1430,6 +1430,8 @@ function InteractWithPipeSession{
 		$promptString = "[$PromptComputerName]: $remotePath "
 		Write-Host -NoNewline $promptString
 		$command = Read-Host
+
+  		$command = $command.TrimEnd()
 		
 		$allowedCommands = @(
 			"AV", "Kerb", "Patch", "PatchNet", "PInject", "Services", "ShellGen",
