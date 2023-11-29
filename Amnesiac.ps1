@@ -4007,7 +4007,9 @@ function Get-ADComputers {
 
         # Parse the results.
         foreach ($entry in $searchResponse.Entries) {
-            $allcomputers += $entry.Attributes["dNSHostName"][0]
+            if ($entry.Attributes["dNSHostName"] -and $entry.Attributes["dNSHostName"].Count -gt 0) {
+                $allcomputers += $entry.Attributes["dNSHostName"][0]
+            }
         }
 
     } while ($pageRequest.Cookie.Length -ne 0)
