@@ -35,11 +35,11 @@ Amnesiac relies on few other projects for its modules. In each module, you'll fi
 
 ### Support and Contributions
 
-For support or discussions, please visit the Discussions page and submit a new post. Contributions and feedback from the community are highly encouraged and appreciated.
+Contributions and feedback from the community are highly encouraged and appreciated.
 
-## Preview
+### Preview
 
-![2023-11-08_20-39](https://github.com/Leo4j/Amnesiac/assets/61951374/d95d76da-c41e-40c2-aebb-8d38666a21f1)
+![image](https://github.com/Leo4j/Amnesiac/assets/61951374/895add16-3775-4f9e-9fef-b21739f206e0)
 
 ### License
 
