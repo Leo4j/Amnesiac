@@ -25,7 +25,7 @@ Amnesiac sends commands and receives outputs through Named Pipes, ensuring discr
 
 ### No Installation Required
 
-Unlike traditional frameworks, Amnesiac does not require installation. It operates entirely in memory, reducing the risk of detection and leaving no traces behind.
+Unlike traditional frameworks, Amnesiac does not require installation. It operates entirely in memory, reducing the risk of detection and forensic footprint.
 
 ### User-Friendly Framework
 
