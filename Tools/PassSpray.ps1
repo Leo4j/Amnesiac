@@ -59,7 +59,7 @@ function Invoke-PassSpray {
 		try {
 		        $directoryEntry = New-Object System.DirectoryServices.DirectoryEntry($LDAPPath, $usr, $Password)
 		        if ($directoryEntry.name -ne $null) {
-		            Write-Output "[+] Authentication Successful for user $UserName"
+		            Write-Output "[+] Authentication Successful for user $usr"
 		            $KeepTrack = $True
 		        }
 		} catch {}
