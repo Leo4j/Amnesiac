@@ -5,6 +5,12 @@ function Validate-Credentials {
         [string]$Domain
     )
 
+    if(!$Domain){
+        $Domain = $env:USERDNSDOMAIN
+        if(!$Domain){$Domain = [System.Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties().DomainName.Trim()}
+     	if(!$Domain){$Domain = Get-WmiObject -Namespace root\cimv2 -Class Win32_ComputerSystem | Select Domain | Format-Table -HideTableHeaders | out-string | ForEach-Object { $_.Trim() }}
+    }
+
     $LDAPPath = "LDAP://"
     $LDAPPath += $Domain
 
