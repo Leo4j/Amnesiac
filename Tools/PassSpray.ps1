@@ -108,7 +108,9 @@ function Get-ADUsers {
 
         # Parse the results.
         foreach ($entry in $searchResponse.Entries) {
-            $allusers += $entry.Attributes["samAccountName"][0]
+	    if ($entry.Attributes["samAccountName"] -and $entry.Attributes["samAccountName"].Count -gt 0) {
+            	$allusers += $entry.Attributes["samAccountName"][0]
+	    }
         }
 
     } while ($pageRequest.Cookie.Length -ne 0)
