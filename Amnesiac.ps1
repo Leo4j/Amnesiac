@@ -1690,8 +1690,10 @@ function InteractWithPipeSession{
 			Write-Output "[+] Validate Domain Credentials | https://github.com/Leo4j/Validate-Credentials"
 			Write-Output ""
 			Write-Output "[+] Usage:"
+   			Write-Output ""
+			Write-Output "    Validate-Credentials -UserName Senna -Password FuerteCorre1                         Test Credentials"
 			Write-Output ""
-			Write-Output "    Validate-Credentials -UserName Senna -Password FuerteCorre1 -Domain ferrari.local   Test Credentials"
+			Write-Output "    Validate-Credentials -UserName Senna -Password FuerteCorre1 -Domain ferrari.local   Specify Domain"
 			Write-Output ""
 			Write-Output "    Validate-Credentials -UserName Senna -Domain ferrari.local                          Test Empty Password"
 			
