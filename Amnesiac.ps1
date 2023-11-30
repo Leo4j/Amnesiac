@@ -1,4 +1,13 @@
 function Amnesiac {
+
+	<#
+	.SYNOPSIS
+	Amnesiac Author: Rob LP (@L3o4j)
+	
+	.DESCRIPTION
+	Post-Exploitation framework designed to assist with lateral movement within Active Directory environments
+	URL: https://github.com/Leo4j/Amnesiac	
+	#>
     
 	param (
         [string]$Command,
