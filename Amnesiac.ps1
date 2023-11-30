@@ -3039,23 +3039,22 @@ function CheckReachableHosts {
 	
 	if(!$global:AllUserDefinedTargets){
 		if(!$Domain){
-			try{
-				$RetrieveDomain = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
-				$Domain = $RetrieveDomain.Name
-				$ldapretrieveddomain = $True
-			}
-			catch{$Domain = Get-WmiObject -Namespace root\cimv2 -Class Win32_ComputerSystem | Select Domain | Format-Table -HideTableHeaders | out-string | ForEach-Object { $_.Trim() }}
+			$Domain = $env:USERDNSDOMAIN
+			if(!$Domain){$Domain = [System.Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties().DomainName.Trim()}
+		 	if(!$Domain){$Domain = Get-WmiObject -Namespace root\cimv2 -Class Win32_ComputerSystem | Select Domain | Format-Table -HideTableHeaders | out-string | ForEach-Object { $_.Trim() }}
 		}
-
+		
 		if(!$DomainController){
-			if($ldapretrieveddomain){
-				$dcObjects = @($RetrieveDomain.DomainControllers)
-				$DomainController = $dcObjects[0].Name
+			$currentDomain = [System.DirectoryServices.ActiveDirectory.Domain]::GetDomain((New-Object System.DirectoryServices.ActiveDirectory.DirectoryContext('Domain', $Domain)))
+			$domainControllers = $currentDomain.DomainControllers
+		 	$DomainController = $domainControllers[0].Name
+		  	if(!$DomainController){
+				$DomainController = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().RidRoleOwner.Name
 			}
-			else{
+		  	if(!$DomainController){
 				$result = nslookup -type=all "_ldap._tcp.dc._msdcs.$Domain" 2>$null
 				$DomainController = ($result | Where-Object { $_ -like '*svr hostname*' } | Select-Object -First 1).Split('=')[-1].Trim()
-			}
+		  	}
 		}
 		
 		$Computers = @()
@@ -3407,23 +3406,22 @@ function CheckAdminAccess {
 	else{
 		
 		if(!$Domain){
-			try{
-				$RetrieveDomain = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
-				$Domain = $RetrieveDomain.Name
-				$ldapretrieveddomain = $True
-			}
-			catch{$Domain = Get-WmiObject -Namespace root\cimv2 -Class Win32_ComputerSystem | Select Domain | Format-Table -HideTableHeaders | out-string | ForEach-Object { $_.Trim() }}
+			$Domain = $env:USERDNSDOMAIN
+			if(!$Domain){$Domain = [System.Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties().DomainName.Trim()}
+		 	if(!$Domain){$Domain = Get-WmiObject -Namespace root\cimv2 -Class Win32_ComputerSystem | Select Domain | Format-Table -HideTableHeaders | out-string | ForEach-Object { $_.Trim() }}
 		}
-
+		
 		if(!$DomainController){
-			if($ldapretrieveddomain){
-				$dcObjects = @($RetrieveDomain.DomainControllers)
-				$DomainController = $dcObjects[0].Name
+			$currentDomain = [System.DirectoryServices.ActiveDirectory.Domain]::GetDomain((New-Object System.DirectoryServices.ActiveDirectory.DirectoryContext('Domain', $Domain)))
+			$domainControllers = $currentDomain.DomainControllers
+		 	$DomainController = $domainControllers[0].Name
+		  	if(!$DomainController){
+				$DomainController = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().RidRoleOwner.Name
 			}
-			else{
+		  	if(!$DomainController){
 				$result = nslookup -type=all "_ldap._tcp.dc._msdcs.$Domain" 2>$null
 				$DomainController = ($result | Where-Object { $_ -like '*svr hostname*' } | Select-Object -First 1).Split('=')[-1].Trim()
-			}
+		  	}
 		}
 
 		$Computers = @()
