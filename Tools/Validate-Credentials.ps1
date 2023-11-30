@@ -14,25 +14,22 @@ function Validate-Credentials{
     )
 	
 	if(!$Domain){
-		try{
-			$RetrieveDomainFull = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
-			$RetrieveDomain = $RetrieveDomainFull.Name
-		}
-		catch{$RetrieveDomain = Get-WmiObject -Namespace root\cimv2 -Class Win32_ComputerSystem | Select Domain | Format-Table -HideTableHeaders | out-string | ForEach-Object { $_.Trim() }}
-		$Domain = $RetrieveDomain
+	    $Domain = $env:USERDNSDOMAIN
+	    if(!$Domain){$Domain = [System.Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties().DomainName.Trim()}
+	    if(!$Domain){$Domain = Get-WmiObject -Namespace root\cimv2 -Class Win32_ComputerSystem | Select Domain | Format-Table -HideTableHeaders | out-string | ForEach-Object { $_.Trim() }}
 	}
 	
 	if(!$DomainController){
-		
-		$DomainController = $RetrieveDomainFull.RidRoleOwner.Name
-		
-		if(!$DomainController){
-
-			$result = nslookup -type=all "_ldap._tcp.dc._msdcs.$Domain" 2>$null
-
-			# Filtering to find the line with 'svr hostname' and then split it to get the last part which is our DC name.
-			$DomainController = ($result | Where-Object { $_ -like '*svr hostname*' } | Select-Object -First 1).Split('=')[-1].Trim()
-		}
+	    $currentDomain = [System.DirectoryServices.ActiveDirectory.Domain]::GetDomain((New-Object System.DirectoryServices.ActiveDirectory.DirectoryContext('Domain', $Domain)))
+	    $domainControllers = $currentDomain.DomainControllers
+	 	$DomainController = $domainControllers[0].Name
+	  	if(!$DomainController){
+	        	$DomainController = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().RidRoleOwner.Name
+	    	}
+	  	if(!$DomainController){
+	        	$result = nslookup -type=all "_ldap._tcp.dc._msdcs.$Domain" 2>$null
+	        	$DomainController = ($result | Where-Object { $_ -like '*svr hostname*' } | Select-Object -First 1).Split('=')[-1].Trim()
+	  	}
 	}
 
 	$principalContext = New-Object System.DirectoryServices.AccountManagement.PrincipalContext([System.DirectoryServices.AccountManagement.ContextType]::Domain, $Domain, $DomainController)
