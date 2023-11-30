@@ -3049,10 +3049,8 @@ function CheckReachableHosts {
 			}
 		}
 		
-		$connection = Establish-LDAPSession -Domain $Domain -DomainController $DomainController
-		
 		$Computers = @()
-		$Computers = Get-ADComputers -ADCompDomain $Domain -LdapConnection $connection
+		$Computers = Get-ADComputers -ADCompDomain $Domain
 		$Computers = $Computers | Sort-Object
 	}
 	
@@ -3418,11 +3416,9 @@ function CheckAdminAccess {
 				$DomainController = ($result | Where-Object { $_ -like '*svr hostname*' } | Select-Object -First 1).Split('=')[-1].Trim()
 			}
 		}
-		
-		$connection = Establish-LDAPSession -Domain $Domain -DomainController $DomainController
-		
+
 		$Computers = @()
-		$Computers = Get-ADComputers -ADCompDomain $Domain -LdapConnection $connection
+		$Computers = Get-ADComputers -ADCompDomain $Domain
 		$Computers = $Computers | Sort-Object
 		
 	}
@@ -3971,86 +3967,34 @@ function File-Server {
 
 function Get-ADComputers {
     param (
-        [string]$ADCompDomain,
-        [System.DirectoryServices.Protocols.LdapConnection]$LdapConnection  # The previously established connection
+        [string]$ADCompDomain
     )
-
-    # Construct distinguished name for the domain.
-    $domainDistinguishedName = "DC=" + ($ADCompDomain -replace "\.", ",DC=")
-
-    # Set up an LDAP search request.
-    $ldapFilter = "(&(objectCategory=computer)(objectClass=computer)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"
-    $attributesToLoad = @("dNSHostName")
 
     $allcomputers = @()
+    $objSearcher = New-Object System.DirectoryServices.DirectorySearcher
 
-    # Create a page request control
-    $pageRequest = New-Object System.DirectoryServices.Protocols.PageResultRequestControl(1000)
-    
-    do {
-        $searchRequest = New-Object System.DirectoryServices.Protocols.SearchRequest(
-            $domainDistinguishedName,     # Base DN
-            $ldapFilter,                  # LDAP filter
-            [System.DirectoryServices.Protocols.SearchScope]::Subtree,
-            $attributesToLoad             # Attributes to retrieve
-        )
-
-        # Add the page request control to the search request.
-        $searchRequest.Controls.Add($pageRequest)
-        
-        # Perform the search using the provided LdapConnection.
-        $searchResponse = $LdapConnection.SendRequest($searchRequest)
-
-        # Check for a page response control and update the cookie for the next request.
-        $pageResponse = $searchResponse.Controls | Where-Object { $_ -is [System.DirectoryServices.Protocols.PageResultResponseControl] }
-
-        if ($pageResponse) {
-            $pageRequest.Cookie = $pageResponse.Cookie
-        }
-
-        # Parse the results.
-        foreach ($entry in $searchResponse.Entries) {
-            if ($entry.Attributes["dNSHostName"] -and $entry.Attributes["dNSHostName"].Count -gt 0) {
-                $allcomputers += $entry.Attributes["dNSHostName"][0]
-            }
-        }
-
-    } while ($pageRequest.Cookie.Length -ne 0)
-
-    return $allcomputers
-}
-
-function Establish-LDAPSession {
-    param (
-        [string]$Domain,
-        [string]$DomainController
-    )
-
-    # If the DomainController parameter is just a name (not FQDN), append the domain to it.
-    if ($DomainController -notlike "*.*") {
-        $DomainController = "$DomainController.$Domain"
+    # Construct distinguished name for the domain.
+    if ($ADCompDomain) {
+        $domainDN = "DC=" + ($ADCompDomain -replace "\.", ",DC=")
+        $ldapPath = "LDAP://$domainDN"
+        $objSearcher.SearchRoot = New-Object System.DirectoryServices.DirectoryEntry($ldapPath)
+    } else {
+        $objSearcher.SearchRoot = New-Object System.DirectoryServices.DirectoryEntry
     }
 
-    # Define LDAP parameters
-    $ldapServer = $DomainController
-    $ldapPort = 389 # Use 636 for LDAPS (SSL)
+    # LDAP search request setup.
+    $objSearcher.Filter = "(&(sAMAccountType=805306369)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"
+    $objSearcher.PageSize = 1000  # Handling paging internally
 
-    # Load necessary assembly
-    Add-Type -AssemblyName "System.DirectoryServices.Protocols"
+    # Perform the search
+    $results = $objSearcher.FindAll()
 
-    # Create LDAP directory identifier
-    $identifier = New-Object System.DirectoryServices.Protocols.LdapDirectoryIdentifier($ldapServer, $ldapPort)
+    # Process the results
+    foreach ($result in $results) {
+        $allcomputers += $result.Properties["dNSHostName"]
+    }
 
-    # Establish LDAP connection as current user
-    $ldapConnection = New-Object System.DirectoryServices.Protocols.LdapConnection($identifier)
-
-    # Use Negotiate (Kerberos or NTLM) for authentication
-    $ldapConnection.AuthType = [System.DirectoryServices.Protocols.AuthType]::Negotiate
-
-    # Bind (establish connection)
-    $ldapConnection.Bind()
-
-    return $ldapConnection
+    return $allcomputers | Sort-Object -Unique
 }
 
 function PrintHelpSessionHunter{
