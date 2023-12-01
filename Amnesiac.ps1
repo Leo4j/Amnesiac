@@ -1449,7 +1449,7 @@ function InteractWithPipeSession{
 			"Startup", "TLS", "Process"
 		)
 
-  		if($command -like "Kerb" -OR $command -like "Invoke-PassSpray*" -OR $command -like "DCSync" -OR $command -like "Access_Check*" -OR $command -like "Find-LocalAdminAccess*" -OR $command -like "Invoke-SessionHunter*"){
+  		if($command -like "Kerb" -OR $command -like "Invoke-PassSpray*" -OR $command -like "DCSync" -OR $command -like "Access_Check*" -OR $command -like "Find-LocalAdminAccess*" -OR $command -like "Invoke-SessionHunter*" -OR $command -like "AutoMimi*" -OR $command -like "Mimi*"){
 			$global:RestoreTimeout = $True
 			$timeoutSeconds = 300
 		}
