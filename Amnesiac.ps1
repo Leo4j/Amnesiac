@@ -3079,7 +3079,7 @@ function CheckReachableHosts {
 		
 		$tcpClient = New-Object System.Net.Sockets.TcpClient
 		$asyncResult = $tcpClient.BeginConnect($computer, $Port, $null, $null)
-		$wait = $asyncResult.AsyncWaitHandle.WaitOne(50)
+		$wait = $asyncResult.AsyncWaitHandle.WaitOne(100)
 		if ($wait) {
 			try {
 				$tcpClient.EndConnect($asyncResult)
@@ -3442,7 +3442,7 @@ function CheckAdminAccess {
 			param ($computer)
 			$tcpClient = New-Object System.Net.Sockets.TcpClient
 			$asyncResult = $tcpClient.BeginConnect($computer, 445, $null, $null)
-			$wait = $asyncResult.AsyncWaitHandle.WaitOne(50)
+			$wait = $asyncResult.AsyncWaitHandle.WaitOne(100)
 			if ($wait) {
 				try {
 					$tcpClient.EndConnect($asyncResult)
@@ -4260,7 +4260,7 @@ function Get-Command {
 	
 	elseif ($Command -eq "Net") {
 		$predefinedCommands = @(
-			'netstat -anp tcp'
+			'$TempNet = netstat -anp tcp;$TempNet;Write-Output "";Write-Output "[+] Resolving Foreign Addresses";Write-Output "";$TempNet | Select-String -Pattern "\s+\d+\.\d+\.\d+\.\d+:\d+\s+" | ForEach-Object { ($_ -split "\s+")[3] -split ":" | Select-Object -First 1 } | Where-Object { $_ -ne "0.0.0.0" -and $_ -ne "127.0.0.1" } | Sort-Object -Unique | ForEach-Object { try { "$_ - " + [System.Net.Dns]::GetHostEntry($_).HostName } catch { } }'
 		)
 	}
 	
