@@ -818,7 +818,7 @@ function Display-SessionMenu {
  #+#     #+# #+#       #+# #+#   #+#+# #+#       #+#    #+#    #+#     #+#     #+# #+#    #+# 
  ###     ### ###       ### ###    #### ########## ######## ########### ###     ###  ########  ')
 
-	$BannerLink = '                                           [Version: 1.0.0] https://github.com/Leo4j/Amnesiac'
+	$BannerLink = '                                           [Version: 1.0.1] https://github.com/Leo4j/Amnesiac'
 	
 	if($Night){
 		Write-Host $Banner -Foreground blue
