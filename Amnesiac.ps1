@@ -124,6 +124,8 @@ function Amnesiac {
 			else{$choice = Read-Host " Choose an option or type 'exit' to quit"}
 		}
 		
+		$choice = $choice.Trim()
+
 		if ($choice -eq '') {continue}
 		
 		if ($choice -eq 'sessions') {
