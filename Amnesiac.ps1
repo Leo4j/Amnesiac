@@ -1165,6 +1165,7 @@ while (`$true) {
 	if(!$HidePayload){
 		if($global:payloadformat -eq 'exe'){
 			$exefilelocation = "C:\Users\Public\Documents\Amnesiac\Payloads\$($PipeName).exe"
+   			Write-Output ""
 			Write-Host " [+] Payload saved to: $exefilelocation" -Foreground cyan
 			Write-Output ""
 		}
@@ -1927,37 +1928,37 @@ function InteractWithPipeSession{
 			if($global:payloadformat -eq 'b64'){
 				$global:payloadformat = 'pwsh'
 				Write-Host ""
-				Write-Host "[+] Payload format: pwsh" -Foreground yellow
+				Write-Host " [+] Payload format: pwsh" -Foreground yellow
 				Write-Host ""
 			}
 			elseif($global:payloadformat -eq 'pwsh'){
 				$global:payloadformat = 'pwraw'
 				Write-Host ""
-				Write-Host "[+] Payload format: pwsh(raw)" -Foreground yellow
+				Write-Host " [+] Payload format: pwsh(raw)" -Foreground yellow
 				Write-Host ""
 			}
 			elseif($global:payloadformat -eq 'pwraw'){
 				$global:payloadformat = 'raw'
 				Write-Host ""
-				Write-Host "[+] Payload format: cmd(raw)" -Foreground yellow
+				Write-Host " [+] Payload format: cmd(raw)" -Foreground yellow
 				Write-Host ""
 			}
 			elseif($global:payloadformat -eq 'raw'){
 				$global:payloadformat = 'gzip'
 				Write-Host ""
-				Write-Host "[+] Payload format: gzip" -Foreground yellow
+				Write-Host " [+] Payload format: gzip" -Foreground yellow
 				Write-Host ""
 			}
    			elseif($global:payloadformat -eq 'gzip'){
 				$global:payloadformat = 'exe'
 				Write-Host ""
-				Write-Host "[+] Payload format: exe" -Foreground yellow
+				Write-Host " [+] Payload format: exe" -Foreground yellow
 				Write-Host ""
 			}
 			elseif($global:payloadformat -eq 'exe'){
 				$global:payloadformat = 'b64'
 				Write-Host ""
-				Write-Host "[+] Payload format: cmd(b64)" -Foreground yellow
+				Write-Host " [+] Payload format: cmd(b64)" -Foreground yellow
 				Write-Host ""
 			}
 			continue
