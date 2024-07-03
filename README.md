@@ -49,7 +49,7 @@ Contributions and feedback from the community are highly encouraged and apprecia
 
 ### License
 
-Amnesiac is distributed under the BSD 3-Clause "New" or "Revised" License. Please review the license for details on usage and redistribution.
+Amnesiac is distributed under the GPL-3.0 License. Please review the license for details on usage and redistribution.
 
 ### Disclaimer
 
