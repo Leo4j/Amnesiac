@@ -58,7 +58,7 @@ function Amnesiac {
 	
 	# Folder Structure Creation
 	$basePath = "C:\Users\Public\Documents\Amnesiac"
-	$subfolders = @("Clipboard", "Downloads", "History", "Keylogger", "Screenshots", "Scripts", "Monitor_TGTs")
+	$subfolders = @("Clipboard", "Downloads", "History", "Keylogger", "Payloads", "Screenshots", "Scripts", "Monitor_TGTs")
 	if (-not (Test-Path $basePath)) {New-Item -Path $basePath -ItemType Directory > $null}
 	$subfolders | ForEach-Object {$subfolderPath = Join-Path -Path $basePath -ChildPath $_;if (-not (Test-Path $subfolderPath)) {New-Item -Path $subfolderPath -ItemType Directory > $null}}
 	
