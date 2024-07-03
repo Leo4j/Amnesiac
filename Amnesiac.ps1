@@ -1921,7 +1921,9 @@ function InteractWithPipeSession{
 			}
    			elseif($global:payloadformat -eq 'gzip'){
 				$global:payloadformat = 'b64'
-				$global:Message = " [+] Payload format: cmd(b64)"
+				Write-Host ""
+				Write-Host "[+] Payload format: cmd(b64)" -Foreground yellow
+				Write-Host ""
 			}
 			continue
 		}
