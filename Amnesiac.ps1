@@ -1538,7 +1538,9 @@ function InteractWithPipeSession{
 		return
 	}
 	
-	$PromptComputerName = $computerNameOnly -split '\.' | Select-Object -First 1
+	$ipPattern = '^\d{1,3}(\.\d{1,3}){3}$'
+   	if($computerNameOnly -match $ipPattern){$PromptComputerName = $computerNameOnly}
+    	else{$PromptComputerName = $computerNameOnly -split '\.' | Select-Object -First 1}
 
 	while ($true) {
 		
@@ -3885,7 +3887,9 @@ while (`$true) {
 				}
 			}
 			
-			$computerNameOnly = $ComputerName -split '\.' | Select-Object -First 1
+			$ipPattern = '^\d{1,3}(\.\d{1,3}){3}$'
+   			if($ComputerName -match $ipPattern){$computerNameOnly = $ComputerName}
+      			else{$computerNameOnly = $ComputerName -split '\.' | Select-Object -First 1}
 			$promptString = "[$computerNameOnly]: $remotePath "
 			Write-Host -NoNewline $promptString
 			$userCommand = Read-Host
