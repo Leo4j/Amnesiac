@@ -17,6 +17,12 @@ Please read the documentation to get the best out of Amnesiac: https://leo4j.git
 iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/Leo4j/Amnesiac/main/Amnesiac.ps1');Amnesiac
 ```
 
+If you need to run Amnesiac through a shell, use Amnesiac_ShellReady.ps1 | No colors, shell compatible
+
+```
+iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/Leo4j/Amnesiac/refs/heads/main/Amnesiac_ShellReady.ps1');Amnesiac
+```
+
 ## Key Features
 
 ### Command Execution over Named-Pipes (SMB)
