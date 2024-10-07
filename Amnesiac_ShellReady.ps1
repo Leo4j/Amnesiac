@@ -121,11 +121,11 @@ function Amnesiac {
 		else{
 			# Get User Input
 			if(($global:directAdminSessions.Count -gt 0) -OR ($global:listenerSessions.Count -gt 0) -OR ($global:MultipleSessions.Count -gt 0)){
-				Write-Output " Choose an option or session number, or type 'exit' to quit"
+				[Console]::Write(" Choose an option or session number, or type 'exit' to quit ")
 				$choice = Read-Host
 			}
 			else{
-				Write-Output " Choose an option or type 'exit' to quit"
+				[Console]::Write(" Choose an option or type 'exit' to quit ")
 				$choice = Read-Host
 			}
 		}
@@ -786,15 +786,16 @@ exit
 			'3' {
 				if($ScanMode -OR $global:ScanModer){$ScanMode = $False;$global:ScanModer = $False}
 				else{Write-Output ""}
-				Write-Output " Press any key to stop scanning..."
+				Write-Output " Scanning will stop in 40 seconds..."
 				Write-Output ""
 				
-				$Host.UI.RawUI.FlushInputBuffer()
-				$PlaceHolder = $True
+				$timeout = 40
+				$elapsedTime = 0
+				$timeInterval = 1 
 				
-				while (-not $host.UI.RawUI.KeyAvailable) {
-					Start-Sleep -Milliseconds 500
-					if($PlaceHolder){$PlaceHolder = $False;$Host.UI.RawUI.FlushInputBuffer()}
+				while ($elapsedTime -lt $timeout) {
+					#Start-Sleep -Milliseconds 500
+					#if($PlaceHolder){$PlaceHolder = $False;$Host.UI.RawUI.FlushInputBuffer()}
 					if($Domain -AND $DomainController){Scan-WaitingTargets -Domain $Domain -DomainController $DomainController}
 					else{Scan-WaitingTargets}
 					$global:Message = $global:Message -split "`n"
@@ -803,8 +804,17 @@ exit
 						Write-Output $line
 					}
 					$global:Message = $null
-					Start-Sleep -Milliseconds 100
+					
+					# Sleep for a short interval before the next iteration
+					Start-Sleep -Seconds $timeInterval
+
+					# Increment elapsed time
+					$elapsedTime += $timeInterval
 				}
+				
+				# Exit the loop properly by reading the key press
+				#$null = [System.Console]::ReadKey($true)
+				
 				$global:Message = $null
 				$choice = $null
 
@@ -1613,7 +1623,7 @@ function InteractWithPipeSession{
 		
 		# Read the command from the server's console
 		$promptString = "[$PromptComputerName]: $remotePath "
-		Write-Output $promptString
+		[Console]::Write($promptString)
 		$command = Read-Host
 
   		$command = $command.TrimEnd()
@@ -3687,7 +3697,7 @@ function Invoke-WMIRemoting {
 	} 
 	else {
 	        do {
-	            Write-Output "[$ComputerName]: PS:\>"
+	            [Console]::Write("[$ComputerName]: PS:\>")
 				$inputFromUser = Read-Host
 	            if ($inputFromUser -eq 'exit') {
 	                Write-Output ""
@@ -3898,7 +3908,7 @@ while (`$true) {
    			if($ComputerName -match $ipPattern){$computerNameOnly = $ComputerName}
       			else{$computerNameOnly = $ComputerName -split '\.' | Select-Object -First 1}
 			$promptString = "[$computerNameOnly]: $remotePath "
-			Write-Output $promptString
+			[Console]::Write($promptString)
 			$userCommand = Read-Host
 			
 			if ($userCommand -eq "exit") {
