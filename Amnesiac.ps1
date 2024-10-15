@@ -5357,7 +5357,7 @@ function Get-Command {
 	
 	elseif ($Command -eq "Services") {
 		$predefinedCommands = @(
-			'Get-WmiObject Win32_Service | Where-Object {$_.State -eq "Running"} | Select-Object DisplayName, Name, ProcessId, StartName'
+			'Get-WmiObject Win32_Service | Where-Object {$_.State -eq "Running"} | Select-Object DisplayName, Name, ProcessId, StartName | Out-String -Width 4096'
 		)
 	}
 	
