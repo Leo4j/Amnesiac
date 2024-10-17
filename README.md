@@ -23,7 +23,7 @@ If you need to run Amnesiac through a shell, use Amnesiac_ShellReady.ps1 | No co
 iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/Leo4j/Amnesiac/refs/heads/main/Amnesiac_ShellReady.ps1');Amnesiac
 ```
 
-## Key Features
+## Key Features 
 
 ### Command Execution over Named-Pipes (SMB)
 
