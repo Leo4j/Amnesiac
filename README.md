@@ -51,7 +51,7 @@ Contributions and feedback from the community are highly encouraged and apprecia
 
 ### Preview
 
-Click to watch on YouTube :point_down:
+Watch on YouTube :point_down:
 
 [![Watch the video](https://img.youtube.com/vi/xwHjKKtqAD4/maxresdefault.jpg)](https://youtu.be/xwHjKKtqAD4)
 
