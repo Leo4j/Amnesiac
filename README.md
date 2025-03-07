@@ -51,6 +51,10 @@ Contributions and feedback from the community are highly encouraged and apprecia
 
 ### Preview
 
+Click to watch on YouTube :point_down:
+
+[![Watch the video](https://img.youtube.com/vi/xwHjKKtqAD4/maxresdefault.jpg)](https://youtu.be/xwHjKKtqAD4)
+
 ![image](https://github.com/Leo4j/Amnesiac/assets/61951374/895add16-3775-4f9e-9fef-b21739f206e0)
 
 ### License
