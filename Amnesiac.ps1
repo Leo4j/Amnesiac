@@ -4970,6 +4970,7 @@ function Get-ADComputers {
     # LDAP search request setup.
     $objSearcher.Filter = "(&(sAMAccountType=805306369)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"
     $objSearcher.PageSize = 1000  # Handling paging internally
+    $objSearcher.PropertiesToLoad.Clear() | Out-Null
     $objSearcher.PropertiesToLoad.Add("dNSHostName") | Out-Null
 
     # Perform the search
